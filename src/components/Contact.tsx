@@ -56,17 +56,17 @@ export default function Contact() {
       const emailEl = emailRef.current
       if (emailEl) {
         emailEl.addEventListener('mouseenter', () => {
-          gsap.to(emailEl, { 
-            scale: 1.02, 
+          gsap.to(emailEl, {
+            scale: 1.02,
             color: '#D4552A',
-            duration: 0.3 
+            duration: 0.3
           })
         })
         emailEl.addEventListener('mouseleave', () => {
-          gsap.to(emailEl, { 
-            scale: 1, 
-            color: '#1A1A1A',
-            duration: 0.3 
+          gsap.to(emailEl, {
+            scale: 1,
+            color: '#F5F0E8',
+            duration: 0.3
           })
         })
       }

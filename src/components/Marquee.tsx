@@ -34,17 +34,17 @@ export default function Marquee() {
 
   const marqueeItems = [
     'WEB DESIGN',
-    '—',
+    '●',
     'DEVELOPMENT',
-    '—',
+    '●',
     'BRANDING',
-    '—',
+    '●',
     'UI/UX',
-    '—',
+    '●',
     'E-COMMERCE',
-    '—',
+    '●',
     'STRATEGY',
-    '—',
+    '●',
   ]
 
   return (
@@ -56,7 +56,7 @@ export default function Marquee() {
         {[...marqueeItems, ...marqueeItems].map((item, i) => (
           <span
             key={i}
-            className="font-display text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold mx-4 sm:mx-6 md:mx-10"
+            className={`font-display text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold mx-4 sm:mx-6 md:mx-10 ${item === '●' ? 'text-rust' : ''}`}
           >
             {item}
           </span>

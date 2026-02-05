@@ -9,15 +9,15 @@ gsap.registerPlugin(ScrollTrigger)
 export default function Hero() {
   const containerRef = useRef<HTMLElement>(null)
   const titleRef = useRef<HTMLHeadingElement>(null)
-  const subtitleRef = useRef<HTMLParagraphElement>(null)
   const taglineRef = useRef<HTMLDivElement>(null)
   const scrollIndicatorRef = useRef<HTMLDivElement>(null)
+  const echoContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const ctx = gsap.context(() => {
       // Split text animation for main title
       const titleChars = titleRef.current?.querySelectorAll('.char')
-      
+
       if (titleChars) {
         gsap.set(titleChars, { y: 120, opacity: 0, rotateX: -90 })
         gsap.to(titleChars, {
@@ -31,14 +31,39 @@ export default function Hero() {
         })
       }
 
-      // Subtitle animation
-      gsap.from(subtitleRef.current, {
-        y: 60,
-        opacity: 0,
-        duration: 1,
-        delay: 1.5,
-        ease: 'power3.out',
-      })
+      // Echo text container entrance animation
+      const echoContainer = echoContainerRef.current
+      if (echoContainer) {
+        // Animate the whole container in
+        gsap.set(echoContainer, { y: 120, opacity: 0 })
+        gsap.to(echoContainer, {
+          y: 0,
+          opacity: 1,
+          duration: 1.2,
+          delay: 1.3,
+          ease: 'power4.out',
+        })
+
+        // Parallax scroll effect - echo layers trail behind main layer
+        const echoLayers = echoContainer.querySelectorAll('p')
+        echoLayers.forEach((layer, index) => {
+          if (index === 0) return // Main layer doesn't move
+
+          const speed = parseFloat(layer.getAttribute('data-speed') || '1')
+          const yOffset = (1 - speed) * 800 // Offset creates the trailing effect
+
+          gsap.to(layer, {
+            y: yOffset,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: 'top top',
+              end: 'bottom top',
+              scrub: true,
+            },
+          })
+        })
+      }
 
       // Tagline items
       gsap.from('.tagline-item', {
@@ -67,7 +92,7 @@ export default function Hero() {
         ease: 'power2.inOut',
       })
 
-      // Parallax on scroll
+      // Parallax on scroll for main title
       gsap.to(titleRef.current, {
         yPercent: 30,
         scrollTrigger: {
@@ -98,7 +123,7 @@ export default function Hero() {
       {/* Background decorative elements */}
       <div className="absolute top-1/4 right-12 w-px h-48 bg-charcoal/20 hidden lg:block" />
       <div className="absolute bottom-1/4 left-12 w-24 h-px bg-charcoal/20 hidden lg:block" />
-      
+
       {/* Main content */}
       <div className="flex-1 flex flex-col justify-center">
         {/* Tagline */}
@@ -120,41 +145,20 @@ export default function Hero() {
           <span className="block overflow-hidden">
             {splitText('DIGITAL')}
           </span>
-          <span className="block overflow-hidden text-stroke">
-            {splitText('EXPERIENCES')}
-          </span>
         </h1>
 
-        {/* Subtitle */}
-        <p
-          ref={subtitleRef}
-          className="max-w-xs sm:max-w-md md:max-w-xl text-sm sm:text-base md:text-lg lg:text-xl text-charcoal/70 font-body leading-relaxed ml-0 md:ml-auto md:text-right mt-4 md:mt-0"
-        >
-          We merge code with creativity to build websites that 
-          <span className="text-rust font-medium"> stand out</span>. 
-          Strategy, design, and development for brands that refuse to blend in.
-        </p>
+        {/* Parallax Echo Text - EXPERIENCES */}
+        <div ref={echoContainerRef} className="text-container relative h-[clamp(2.5rem,12vw,10rem)]">
+          <p data-speed="1">EXPERIENCES</p>
+          <p data-speed="0.95">EXPERIENCES</p>
+          <p data-speed="0.9">EXPERIENCES</p>
+          <p data-speed="0.85">EXPERIENCES</p>
+          <p data-speed="0.8">EXPERIENCES</p>
+        </div>
       </div>
 
-      {/* Bottom section */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-8 mt-8 md:mt-0">
-        {/* Stats */}
-        <div className="flex gap-8 sm:gap-12 md:gap-16">
-          <div>
-            <span className="font-display text-2xl sm:text-3xl md:text-4xl font-bold">150+</span>
-            <p className="font-mono text-[10px] sm:text-xs tracking-wide text-charcoal/60 mt-1">PROJECTS</p>
-          </div>
-          <div>
-            <span className="font-display text-2xl sm:text-3xl md:text-4xl font-bold">8</span>
-            <p className="font-mono text-[10px] sm:text-xs tracking-wide text-charcoal/60 mt-1">YEARS EXP</p>
-          </div>
-          <div>
-            <span className="font-display text-2xl sm:text-3xl md:text-4xl font-bold">40+</span>
-            <p className="font-mono text-[10px] sm:text-xs tracking-wide text-charcoal/60 mt-1">CLIENTS</p>
-          </div>
-        </div>
-
-        {/* Scroll indicator - hidden on mobile to prevent overlap */}
+      {/* Bottom section - Scroll indicator */}
+      <div className="flex justify-end mt-8 md:mt-0">
         <div ref={scrollIndicatorRef} className="hidden sm:flex flex-col items-center gap-4">
           <span className="font-mono text-xs tracking-widest rotate-90 origin-center translate-x-4">
             SCROLL

@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { Space_Grotesk, DM_Sans, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 import SmoothScroll from '@/components/SmoothScroll'
-import CustomCursor from '@/components/CustomCursor'
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -36,7 +35,6 @@ export default function RootLayout({
     <html lang="en" className={`${spaceGrotesk.variable} ${dmSans.variable} ${jetbrainsMono.variable}`}>
       <body className="font-body antialiased">
         <SmoothScroll>
-          <CustomCursor />
           <div className="noise" />
           {children}
         </SmoothScroll>
