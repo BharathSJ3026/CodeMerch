@@ -120,6 +120,10 @@ export default function Hero() {
       ref={containerRef}
       className="relative min-h-screen flex flex-col justify-between px-4 sm:px-6 md:px-12 pt-24 sm:pt-28 md:pt-32 pb-8 md:pb-12 overflow-hidden"
     >
+      <div
+        className="hero-orb absolute right-4 sm:right-10 md:right-16 top-1/2 -translate-y-1/2 grid pointer-events-none"
+        aria-hidden="true"
+      />
       {/* Background decorative elements */}
       <div className="absolute top-1/4 right-12 w-px h-48 bg-charcoal/20 hidden lg:block" />
       <div className="absolute bottom-1/4 left-12 w-24 h-px bg-charcoal/20 hidden lg:block" />

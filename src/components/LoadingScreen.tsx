@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 
 export default function LoadingScreen({ onComplete }: { onComplete: () => void }) {
@@ -10,43 +10,45 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
   const curtainRightRef = useRef<HTMLDivElement>(null)
   const [isAnimating, setIsAnimating] = useState(true)
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        onComplete: () => {
-          setIsAnimating(false)
-          onComplete()
-        },
-      })
+  useLayoutEffect(() => {
+    // Immediately hide all letters via GSAP before first paint
+    gsap.set(lettersRef.current, { opacity: 0, y: 14 })
 
-      // Set initial state - all letters hidden
-      gsap.set(lettersRef.current, { opacity: 0, y: 20 })
+    // Small RAF delay to ensure DOM is stable
+    requestAnimationFrame(() => {
+      const ctx = gsap.context(() => {
+        const tl = gsap.timeline({
+          onComplete: () => {
+            setIsAnimating(false)
+            onComplete()
+          },
+        })
 
-      // Letter by letter reveal with typewriter effect
-      tl.to(lettersRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 0.08,
-        stagger: 0.1,
-        ease: 'power2.out',
-      })
+        // Smooth letter-by-letter reveal
+        tl.to(lettersRef.current, {
+          opacity: 1,
+          y: 0,
+          duration: 0.15,
+          stagger: 0.065,
+          ease: 'power2.out',
+        })
 
-      // Hold for a moment
-      tl.to({}, { duration: 0.6 })
+        // Hold so the full word reads cleanly
+        tl.to({}, { duration: 0.25 })
 
-      // Curtain pull effect - split in the middle and reveal
-      tl.to(
-        [curtainLeftRef.current, curtainRightRef.current],
-        {
-          xPercent: (i) => (i === 0 ? -100 : 100),
-          duration: 1,
-          ease: 'power3.inOut',
-        },
-        '+=0.2'
-      )
-    }, containerRef)
+        // Curtain pull – smooth and visible
+        tl.to(
+          [curtainLeftRef.current, curtainRightRef.current],
+          {
+            xPercent: (i: number) => (i === 0 ? -100 : 100),
+            duration: 0.6,
+            ease: 'power3.inOut',
+          }
+        )
+      }, containerRef)
 
-    return () => ctx.revert()
+      return () => ctx.revert()
+    })
   }, [onComplete])
 
   const text = 'CODEMERCH'
