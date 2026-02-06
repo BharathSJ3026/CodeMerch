@@ -50,7 +50,7 @@ export default function Hero() {
           if (index === 0) return // Main layer doesn't move
 
           const speed = parseFloat(layer.getAttribute('data-speed') || '1')
-          const yOffset = (1 - speed) * 800 // Offset creates the trailing effect
+          const yOffset = (1 - speed) * 300 // Offset creates the trailing effect
 
           gsap.to(layer, {
             y: yOffset,
@@ -150,10 +150,10 @@ export default function Hero() {
         {/* Parallax Echo Text - EXPERIENCES */}
         <div ref={echoContainerRef} className="text-container relative h-[clamp(2.5rem,12vw,10rem)]">
           <p data-speed="1">EXPERIENCES</p>
-          <p data-speed="0.95">EXPERIENCES</p>
-          <p data-speed="0.9">EXPERIENCES</p>
-          <p data-speed="0.85">EXPERIENCES</p>
-          <p data-speed="0.8">EXPERIENCES</p>
+          <p data-speed="0.97">EXPERIENCES</p>
+          <p data-speed="0.94">EXPERIENCES</p>
+          <p data-speed="0.91">EXPERIENCES</p>
+          <p data-speed="0.88">EXPERIENCES</p>
         </div>
       </div>
 

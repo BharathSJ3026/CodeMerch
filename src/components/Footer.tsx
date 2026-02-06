@@ -3,7 +3,6 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import Link from 'next/link'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -63,83 +62,7 @@ export default function Footer() {
         </h2>
       </div>
 
-      {/* Contact Grid - Bottom */}
-      <div className="relative z-10 mt-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 md:gap-12">
-          {/* Email */}
-          <div className="footer-item">
-            <p className="font-mono text-xs tracking-widest text-cream/40 mb-3">EMAIL</p>
-            <a
-              href="mailto:hello@codemerch.studio"
-              className="font-display text-lg sm:text-xl md:text-2xl font-bold hover:text-rust transition-colors block break-all sm:break-normal"
-            >
-              hello@codemerch.studio
-            </a>
-          </div>
 
-          {/* Phone */}
-          <div className="footer-item">
-            <p className="font-mono text-xs tracking-widest text-cream/40 mb-3">PHONE</p>
-            <a
-              href="tel:+1234567890"
-              className="font-display text-lg sm:text-xl md:text-2xl font-bold hover:text-rust transition-colors block"
-            >
-              +1 (234) 567-890
-            </a>
-          </div>
-
-          {/* Location */}
-          <div className="footer-item">
-            <p className="font-mono text-xs tracking-widest text-cream/40 mb-3">LOCATION</p>
-            <p className="text-base sm:text-lg text-cream/80">
-              New York, NY<br />
-              & Worldwide
-            </p>
-          </div>
-
-          {/* Socials */}
-          <div className="footer-item">
-            <p className="font-mono text-xs tracking-widest text-cream/40 mb-3">FOLLOW US</p>
-            <div className="flex flex-wrap gap-x-4 gap-y-2">
-              <a href="#" className="text-base sm:text-lg text-cream/80 hover:text-rust transition-colors">
-                Twitter
-              </a>
-              <a href="#" className="text-base sm:text-lg text-cream/80 hover:text-rust transition-colors">
-                LinkedIn
-              </a>
-              <a href="#" className="text-base sm:text-lg text-cream/80 hover:text-rust transition-colors">
-                Dribbble
-              </a>
-              <a href="#" className="text-base sm:text-lg text-cream/80 hover:text-rust transition-colors">
-                Instagram
-              </a>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom Bar */}
-        <div className="border-t border-cream/10 pt-6 sm:pt-8 mt-12 sm:mt-16">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <Link href="/" className="font-display text-lg sm:text-xl font-bold tracking-tighter">
-                CODEMERCH<span className="text-rust">.</span>
-              </Link>
-              <span className="font-mono text-[10px] sm:text-xs text-cream/40">
-                © {new Date().getFullYear()}
-              </span>
-            </div>
-
-            <div className="flex gap-4 sm:gap-6">
-              <a href="#" className="font-mono text-[10px] sm:text-xs text-cream/40 hover:text-rust transition-colors">
-                Privacy
-              </a>
-              <a href="#" className="font-mono text-[10px] sm:text-xs text-cream/40 hover:text-rust transition-colors">
-                Terms
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
     </footer>
   )
 }

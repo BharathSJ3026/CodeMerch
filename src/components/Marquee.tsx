@@ -13,7 +13,7 @@ export default function Marquee() {
     const ctx = gsap.context(() => {
       gsap.to('.marquee-track', {
         xPercent: -50,
-        duration: 20,
+        duration: 15,
         repeat: -1,
         ease: 'none',
       })
@@ -50,7 +50,7 @@ export default function Marquee() {
   return (
     <div
       ref={marqueeRef}
-      className="py-6 sm:py-8 md:py-12 bg-charcoal text-cream overflow-hidden"
+      className="py-10 sm:py-12 md:py-16 bg-charcoal text-cream overflow-hidden -rotate-2"
     >
       <div className="marquee-track flex whitespace-nowrap will-change-transform">
         {[...marqueeItems, ...marqueeItems].map((item, i) => (
