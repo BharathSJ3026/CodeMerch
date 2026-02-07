@@ -118,7 +118,7 @@ export default function Hero() {
   return (
     <section
       ref={containerRef}
-      className="relative min-h-screen flex flex-col justify-between px-4 sm:px-6 md:px-12 pt-24 sm:pt-28 md:pt-32 pb-8 md:pb-12 overflow-hidden"
+      className="relative min-h-[90vh] sm:min-h-screen flex flex-col justify-between px-4 sm:px-6 md:px-12 pt-16 sm:pt-28 md:pt-32 pb-6 md:pb-12 overflow-hidden"
     >
       <div
         className="hero-orb absolute right-4 sm:right-10 md:right-16 top-1/2 -translate-y-1/2 grid pointer-events-none"

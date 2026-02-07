@@ -269,6 +269,8 @@ body {
   --orb-c1: oklch(44.4% 0.177 26.899);
   --orb-c2: oklch(85.2% 0.199 91.936);
   --orb-c3: oklch(58.8% 0.158 241.966);
+  --orb-c4: #B400FF; /* Neon Purple */
+  --orb-c5: #00A9FF; /* Neon Blue */
   display: grid;
   grid-template-areas: "stack";
   inline-size: min(42vmin, 420px);
@@ -310,15 +312,15 @@ body {
     ),
     conic-gradient(
       from calc(var(--angle) * 2) at 15% 5%,
-      var(--orb-c2),
+      var(--orb-c4),
       transparent 10% 90%,
-      var(--orb-c2)
+      var(--orb-c5)
     ),
     conic-gradient(
       from calc(var(--angle) * 1) at 20% 80%,
-      var(--orb-c1),
+      var(--orb-c5),
       transparent 10% 90%,
-      var(--orb-c1)
+      var(--orb-c4)
     ),
     conic-gradient(
       from calc(var(--angle) * -2) at 85% 10%,
@@ -352,11 +354,17 @@ body {
 
 @media (max-width: 640px) {
   .hero-orb {
-    inline-size: 72vmin;
-    right: -14vmin;
+    inline-size: 65vmin;
+    right: -10vmin;
     top: auto;
-    bottom: -16vmin;
+    bottom: -10vmin;
     transform: none;
+  }
+  .hero-title {
+    font-size: clamp(4.5rem, 19vw, 10rem);
+  }
+  .text-container.hero-echo p {
+    font-size: clamp(4.5rem, 19vw, 10rem);
   }
 }
 

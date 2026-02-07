@@ -93,7 +93,7 @@ export default function Services() {
     <section
       ref={sectionRef}
       id="services"
-      className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 md:px-12 bg-sand/30 overflow-hidden"
+      className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 md:px-12 bg-cream relative z-20 overflow-hidden min-h-screen rounded-t-[3rem] shadow-[0_-25px_50px_-12px_rgba(0,0,0,0.5)] -mt-[100vh]"
     >
       <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6 md:mb-8">
         <span className="font-mono text-xs sm:text-sm tracking-widest text-charcoal/60">02</span>

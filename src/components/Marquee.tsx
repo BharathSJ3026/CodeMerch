@@ -50,7 +50,7 @@ export default function Marquee() {
   return (
     <div
       ref={marqueeRef}
-      className="py-10 sm:py-12 md:py-16 bg-charcoal text-cream overflow-hidden -rotate-2"
+      className="py-10 sm:py-12 md:py-16 bg-charcoal text-cream overflow-hidden -rotate-2 relative z-50"
     >
       <div className="marquee-track flex whitespace-nowrap will-change-transform">
         {[...marqueeItems, ...marqueeItems].map((item, i) => (
