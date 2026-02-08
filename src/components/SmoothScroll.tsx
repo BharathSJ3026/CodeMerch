@@ -17,18 +17,20 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
   useEffect(() => {
     // Check if user prefers reduced motion
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const isTouch = window.matchMedia('(pointer: coarse)').matches
     
     if (prefersReducedMotion) {
       return // Skip smooth scroll for users who prefer reduced motion
     }
 
     const lenis = new Lenis({
-      duration: 1.0, // Slightly faster for better perceived performance
+      duration: isTouch ? 0.55 : 0.9,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
-      smoothWheel: true,
-      touchMultiplier: 1.5, // Slightly lower for mobile
+      smoothWheel: !isTouch,
+      smoothTouch: true,
+      touchMultiplier: isTouch ? 2.2 : 1.5,
     })
 
     lenisRef.current = lenis

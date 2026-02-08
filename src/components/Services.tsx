@@ -55,23 +55,44 @@ export default function Services() {
       const items = itemsRef.current
       const totalItems = items.length
 
-      // Pin the container
-      ScrollTrigger.create({
-        trigger: containerRef.current,
-        start: 'top top',
-        end: `+=${totalItems * 100}%`, // Scroll distance proportional to items
-        pin: true,
-        scrub: 1,
-        onUpdate: (self) => {
-          // Calculate active index based on scroll progress
-          const progress = self.progress
-          const index = Math.min(
-            Math.floor(progress * totalItems),
-            totalItems - 1
-          )
-          setActiveIndex(index)
-        }
+      const updateActiveIndex = (progress: number) => {
+        const index = Math.min(
+          Math.floor(progress * totalItems),
+          totalItems - 1
+        )
+        setActiveIndex(index)
+      }
+
+      const mm = gsap.matchMedia()
+
+      mm.add('(max-width: 768px)', () => {
+        ScrollTrigger.create({
+          trigger: containerRef.current,
+          start: 'top top',
+          end: `+=${totalItems * 70}%`,
+          pin: true,
+          scrub: 0.4,
+          snap: {
+            snapTo: 1 / (totalItems - 1),
+            duration: 0.2,
+            ease: 'power2.out',
+          },
+          onUpdate: (self) => updateActiveIndex(self.progress),
+        })
       })
+
+      mm.add('(min-width: 769px)', () => {
+        ScrollTrigger.create({
+          trigger: containerRef.current,
+          start: 'top top',
+          end: `+=${totalItems * 100}%`,
+          pin: true,
+          scrub: 1,
+          onUpdate: (self) => updateActiveIndex(self.progress),
+        })
+      })
+
+      return () => mm.revert()
     }, containerRef)
 
     return () => ctx.revert()
@@ -116,7 +137,7 @@ export default function Services() {
                 <div className="absolute inset-0 flex items-center opacity-10 pointer-events-none select-none overflow-hidden">
                     <div className={`flex whitespace-nowrap ${isActive ? 'animate-marquee' : ''}`}>
                         {[...Array(4)].map((_, idx) => (
-                          <span key={idx} className="font-display font-black text-[10vh] sm:text-[15vh] uppercase px-4">
+                              <span key={idx} className="font-display font-black text-[7vh] sm:text-[10vh] md:text-[15vh] uppercase px-4">
                             {service.title} • {service.title} •
                           </span>
                         ))}

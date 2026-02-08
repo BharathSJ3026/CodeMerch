@@ -143,23 +143,23 @@ export default function Navigation() {
 
   return (
     <>
-      <nav className="fixed top-4 left-0 right-0 z-50 flex justify-end items-center pointer-events-none pr-4 sm:pr-6 md:pr-8">
+      <nav className="fixed top-3 sm:top-4 left-0 right-0 z-50 flex justify-end items-center pointer-events-none pr-3 sm:pr-6 md:pr-8 gap-2">
         
         {/* Logo Pill */}
         <div className="nav-pill pointer-events-auto relative group">
           <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-white/5 rounded-lg blur-[1px]"></div>
           <Link 
             href="/" 
-            className="relative block rounded-lg bg-[#1A1A1A]/90 backdrop-blur-md border border-white/10 px-5 py-3 text-[#F5F0E8] transition-colors hover:bg-[#1A1A1A] min-h-[46px] flex items-center"
+            className="relative block rounded-lg bg-[#1A1A1A]/90 backdrop-blur-md border border-white/10 px-3 py-2 sm:px-5 sm:py-3 text-[#F5F0E8] transition-colors hover:bg-[#1A1A1A] min-h-[40px] sm:min-h-[46px] flex items-center"
           >
-            <span className="font-display font-bold tracking-tight text-sm">CODEMERCH<span className="text-[#D4552A]">.</span></span>
+            <span className="font-display font-bold tracking-tight text-[11px] sm:text-sm">CODEMERCH<span className="text-[#D4552A]">.</span></span>
           </Link>
         </div>
 
         {/* Links Pill */}
         <div 
           ref={linksContainerRef}
-          className="nav-pill pointer-events-auto overflow-hidden mx-1"
+          className="nav-pill pointer-events-auto overflow-hidden mx-1 hidden md:block"
         >
           <div className="h-[46px] rounded-lg bg-[#1A1A1A]/90 backdrop-blur-md border border-white/10 text-[#F5F0E8] flex items-center relative">
             <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-white/5 rounded-lg blur-[1px] -z-10"></div>
@@ -183,7 +183,7 @@ export default function Navigation() {
           <button
             ref={buttonRef}
             onClick={() => setMenuOpen(!menuOpen)}
-            className="relative flex items-center justify-center rounded-lg bg-[#1A1A1A]/90 backdrop-blur-md border border-white/10 text-[#F5F0E8] hover:bg-[#1A1A1A] hover:text-[#D4552A] transition-colors px-5 py-3 min-h-[46px]"
+            className="relative flex items-center justify-center rounded-lg bg-[#1A1A1A]/90 backdrop-blur-md border border-white/10 text-[#F5F0E8] hover:bg-[#1A1A1A] hover:text-[#D4552A] transition-colors px-3 py-2 sm:px-5 sm:py-3 min-h-[40px] sm:min-h-[46px]"
             aria-label="Toggle menu"
           >
             <span className="font-bold text-lg -mt-2 tracking-widest leading-none">...</span>

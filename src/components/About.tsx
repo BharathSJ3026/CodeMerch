@@ -14,59 +14,97 @@ export default function About() {
 
   useEffect(() => {
     let split: SplitType | null = null
+    let mm: ReturnType<typeof gsap.matchMedia> | null = null
 
     const ctx = gsap.context(() => {
       if (!revealTextRef.current || !cardsRef.current) return
 
       // Split the text into individual words
       split = new SplitType(revealTextRef.current, { types: 'words' })
+      const words = split.words ?? []
+      if (words.length === 0) return
 
-      if (split.words && split.words.length > 0) {
-        // Start every word dim
-        gsap.set(split.words, { opacity: 0.15 })
+      // Start every word dim
+      gsap.set(words, { opacity: 0.15 })
 
-        const cards = cardsRef.current.children
-        // Initial state for cards
-        gsap.set(cards, { 
-          rotateY: 90, 
-          opacity: 0, 
-          x: 50,
-          transformPerspective: 1000,
-          transformOrigin: "left center" 
-        })
+      const cards = cardsRef.current.children
+      // Initial state for cards
+      gsap.set(cards, {
+        rotateY: 90,
+        opacity: 0,
+        x: 50,
+        transformPerspective: 1000,
+        transformOrigin: 'left center',
+      })
 
+      mm = gsap.matchMedia()
+
+      mm.add('(max-width: 768px)', () => {
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: triggerRef.current,
             start: 'top top',
-            end: '+=100%', // Extended animation duration to sync with stacking
-            scrub: 1,
+            end: '+=70%',
+            scrub: 0.6,
           },
         })
 
-        // Animate words
-        tl.to(split.words, {
+        tl.to(words, {
           opacity: 1,
           duration: 1,
           stagger: 0.05,
           ease: 'none',
         })
 
-        // Animate cards - pop up about 5 words in
-        // Assuming stagger 0.05 * 5 = 0.25s
-        tl.to(cards, {
-          rotateY: 0,
+        tl.to(
+          cards,
+          {
+            rotateY: 0,
+            opacity: 1,
+            x: 0,
+            duration: 0.5,
+            stagger: 0.2,
+            ease: 'back.out(1.5)',
+          },
+          0.25
+        )
+      })
+
+      mm.add('(min-width: 769px)', () => {
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: triggerRef.current,
+            start: 'top top',
+            end: '+=100%',
+            scrub: 1,
+          },
+        })
+
+        tl.to(words, {
           opacity: 1,
-          x: 0,
-          duration: 0.5,
-          stagger: 0.2,
-          ease: 'back.out(1.5)',
-        }, 0.25)
-      }
+          duration: 1,
+          stagger: 0.05,
+          ease: 'none',
+        })
+
+        tl.to(
+          cards,
+          {
+            rotateY: 0,
+            opacity: 1,
+            x: 0,
+            duration: 0.5,
+            stagger: 0.2,
+            ease: 'back.out(1.5)',
+          },
+          0.25
+        )
+      })
     })
 
     return () => {
       ctx.revert()
+      if (mm) mm.revert()
       if (split) split.revert()
     }
   }, [])
@@ -75,7 +113,7 @@ export default function About() {
     <section 
       ref={triggerRef} 
       id="about-track" 
-      className="relative z-[1] min-h-[300vh] bg-cream"
+      className="relative z-[1] min-h-[220vh] sm:min-h-[300vh] bg-cream"
     >
       <div className="sticky top-0 h-screen flex items-center justify-center py-20 px-4 sm:px-6 md:px-12 overflow-hidden">
         <div className="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-24 items-center h-full">
