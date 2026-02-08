@@ -118,6 +118,7 @@ export default function Hero() {
   return (
     <section
       ref={containerRef}
+      id="hero"
       className="relative min-h-[90vh] sm:min-h-screen flex flex-col justify-between px-4 sm:px-6 md:px-12 pt-16 sm:pt-28 md:pt-32 pb-6 md:pb-12 overflow-hidden"
     >
       <div

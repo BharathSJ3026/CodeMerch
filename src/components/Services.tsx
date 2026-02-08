@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -10,150 +10,158 @@ const services = [
   {
     number: '01',
     title: 'Web Design',
-    description: 'Bespoke digital experiences that captivate and convert. From concept to pixel-perfect execution.',
+    description: 'Bespoke digital experiences that captivate and convert.',
     tags: ['UI/UX', 'Prototyping', 'Design Systems'],
+    bgColor: '#FAF3E1',
+    textColor: '#222222',
+    accentColor: '#D4552A'
   },
   {
     number: '02',
     title: 'Development',
-    description: 'Clean, performant code that brings designs to life. Built for scale, optimized for speed.',
+    description: 'Clean, performant code that brings designs to life.',
     tags: ['React', 'Next.js', 'Node.js'],
+    bgColor: '#F5E7C6',
+    textColor: '#222222',
+    accentColor: '#D4552A'
   },
   {
     number: '03',
     title: 'Branding',
-    description: 'Identity systems that tell your story. We craft brands that resonate and endure.',
+    description: 'Identity systems that tell your story.',
     tags: ['Logo Design', 'Guidelines', 'Strategy'],
+    bgColor: '#FA8112',
+    textColor: '#222222',
+    accentColor: '#FAF3E1'
   },
   {
     number: '04',
     title: 'E-Commerce',
-    description: 'Online stores built to sell. Seamless shopping experiences that drive revenue.',
+    description: 'Online stores built to sell.',
     tags: ['Shopify', 'Custom Builds', 'Conversion'],
+    bgColor: '#222222',
+    textColor: '#FAF3E1',
+    accentColor: '#FA8112'
   },
 ]
 
 export default function Services() {
-  const sectionRef = useRef<HTMLElement>(null)
-  const headingRef = useRef<HTMLHeadingElement>(null)
-  const serviceRefs = useRef<HTMLDivElement[]>([])
+  const containerRef = useRef<HTMLElement>(null)
+  const itemsRef = useRef<(HTMLDivElement | null)[]>([])
+  const [activeIndex, setActiveIndex] = useState(0)
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Heading animation
-      gsap.from(headingRef.current, {
-        x: -100,
-        opacity: 0,
-        duration: 1,
-        scrollTrigger: {
-          trigger: headingRef.current,
-          start: 'top 80%',
-          toggleActions: 'play none none reverse',
-        },
+      const items = itemsRef.current
+      const totalItems = items.length
+
+      // Pin the container
+      ScrollTrigger.create({
+        trigger: containerRef.current,
+        start: 'top top',
+        end: `+=${totalItems * 100}%`, // Scroll distance proportional to items
+        pin: true,
+        scrub: 1,
+        onUpdate: (self) => {
+          // Calculate active index based on scroll progress
+          const progress = self.progress
+          const index = Math.min(
+            Math.floor(progress * totalItems),
+            totalItems - 1
+          )
+          setActiveIndex(index)
+        }
       })
-
-      // Service cards stagger animation
-      serviceRefs.current.forEach((ref, i) => {
-        if (!ref) return
-
-        gsap.from(ref, {
-          y: 80,
-          opacity: 0,
-          duration: 0.8,
-          scrollTrigger: {
-            trigger: ref,
-            start: 'top 85%',
-            toggleActions: 'play none none reverse',
-          },
-        })
-
-        // Hover animation setup
-        const title = ref.querySelector('.service-title')
-        const number = ref.querySelector('.service-number')
-        const line = ref.querySelector('.service-line')
-
-        ref.addEventListener('mouseenter', () => {
-          gsap.to(title, { x: 20, duration: 0.4, ease: 'power3.out' })
-          gsap.to(number, { scale: 1.1, color: '#D4552A', duration: 0.3 })
-          gsap.to(line, { scaleX: 1, duration: 0.4, ease: 'power3.out' })
-        })
-
-        ref.addEventListener('mouseleave', () => {
-          gsap.to(title, { x: 0, duration: 0.4, ease: 'power3.out' })
-          gsap.to(number, { scale: 1, color: '#1A1A1A', duration: 0.3 })
-          gsap.to(line, { scaleX: 0, duration: 0.4, ease: 'power3.out' })
-        })
-      })
-    })
+    }, containerRef)
 
     return () => ctx.revert()
   }, [])
 
   return (
-    <section
-      ref={sectionRef}
-      id="services"
-      className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 md:px-12 bg-cream relative z-20 overflow-hidden min-h-screen rounded-t-[3rem] shadow-[0_-25px_50px_-12px_rgba(0,0,0,0.5)] -mt-[100vh]"
+    <>
+      {/* Anchor for navigation routing to ensure it lands at the start of the section */}
+      <div id="services-anchor" className="absolute -mt-[100vh] h-[1px] w-full pointer-events-none" />
+      
+      <section
+        ref={containerRef}
+        id="services"
+      className="relative z-20 min-h-screen rounded-t-[3rem] overflow-hidden -mt-[100vh] shadow-[0_-25px_50px_-12px_rgba(0,0,0,0.5)] transition-colors duration-700 ease-in-out"
+      style={{ backgroundColor: services[activeIndex].bgColor }}
     >
-      <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6 md:mb-8">
-        <span className="font-mono text-xs sm:text-sm tracking-widest text-charcoal/60">02</span>
-        <span className="w-8 sm:w-12 h-px bg-rust" />
-        <span className="font-mono text-xs sm:text-sm tracking-widest text-charcoal/60">WHAT WE DO</span>
-      </div>
+      <div className="h-full flex flex-col justify-between py-12 px-4 sm:px-6 md:px-12">
+        <div className="flex justify-center mb-8">
+            <h2 
+                className="font-display text-[clamp(2rem,6vw,4rem)] font-bold uppercase tracking-tight transition-colors duration-500"
+                style={{ color: services[activeIndex].textColor }}
+            >
+                What We Offer.
+            </h2>
+        </div>
 
-      <h2
-        ref={headingRef}
-        className="font-display text-[clamp(2rem,8vw,5rem)] font-bold leading-[0.95] tracking-tight mb-10 sm:mb-14 md:mb-20 will-change-transform"
-      >
-        Services that
-        <br />
-        <span className="text-stroke">drive results</span>
-      </h2>
+        <div className="flex-1 flex flex-col gap-4">
+          {services.map((service, i) => {
+            const isActive = i === activeIndex
+            return (
+              <div
+                key={service.number}
+                ref={(el) => { itemsRef.current[i] = el }}
+                className={`relative w-full min-h-[72px] sm:min-h-[96px] transition-all duration-700 ease-in-out flex flex-col justify-center overflow-hidden ${
+                  isActive ? 'flex-[2]' : 'flex-[1] opacity-60'
+                }`}
+                style={{ 
+                    color: service.textColor 
+                }}
+              >
+                {/* Background Marquee Text */}
+                <div className="absolute inset-0 flex items-center opacity-10 pointer-events-none select-none overflow-hidden">
+                    <div className={`flex whitespace-nowrap ${isActive ? 'animate-marquee' : ''}`}>
+                        {[...Array(4)].map((_, idx) => (
+                          <span key={idx} className="font-display font-black text-[10vh] sm:text-[15vh] uppercase px-4">
+                            {service.title} • {service.title} •
+                          </span>
+                        ))}
+                    </div>
+                </div>
 
-      <div className="space-y-0">
-        {services.map((service, i) => (
-          <div
-            key={service.number}
-            ref={(el) => { if (el) serviceRefs.current[i] = el }}
-            className="group border-t border-charcoal/20 py-6 sm:py-8 md:py-12 cursor-pointer relative"
-            data-cursor-hover
-          >
-            <div className="service-line absolute top-0 left-0 w-full h-px bg-rust origin-left scale-x-0 will-change-transform" />
-            
-            <div className="flex flex-col md:grid md:grid-cols-12 gap-2 md:gap-4 items-start">
-              <div className="md:col-span-1">
-                <span className="service-number font-mono text-xs sm:text-sm tracking-wide transition-colors">
-                  {service.number}
-                </span>
+                <div className="relative z-10 flex items-center justify-between px-4">
+                    <div className="flex items-baseline gap-6">
+                        <span className="font-mono text-sm sm:text-base">{service.number}</span>
+                        <h3 className={`font-display font-bold uppercase transition-all duration-500 ${
+                            isActive ? 'text-4xl sm:text-6xl' : 'text-2xl sm:text-3xl'
+                        }`}>
+                            {service.title}
+                        </h3>
+                    </div>
+                    
+                    <div className={`flex flex-col items-end gap-2 transition-opacity duration-500 ${isActive ? 'opacity-100' : 'opacity-0 hidden sm:flex'}`}>
+                         <p className="font-mono text-xs sm:text-sm max-w-xs text-right hidden md:block">
+                            {service.description}
+                         </p>
+                         <div className="flex gap-2">
+                             {service.tags.map(tag => (
+                                 <span key={tag} className="text-[10px] uppercase border px-2 py-1 rounded-full" style={{ borderColor: service.textColor }}>
+                                     {tag}
+                                 </span>
+                             ))}
+                         </div>
+                    </div>
+                </div>
               </div>
-              
-              <div className="md:col-span-4">
-                <h3 className="service-title font-display text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold will-change-transform">
-                  {service.title}
-                </h3>
-              </div>
-              
-              <div className="md:col-span-4 md:col-start-6 mt-2 md:mt-0">
-                <p className="text-sm sm:text-base text-charcoal/70 leading-relaxed">
-                  {service.description}
-                </p>
-              </div>
-              
-              <div className="md:col-span-3 flex flex-wrap gap-1.5 sm:gap-2 mt-3 md:mt-0">
-                {service.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="font-mono text-[10px] sm:text-xs tracking-wide bg-charcoal/10 px-2 sm:px-3 py-0.5 sm:py-1"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        ))}
-        <div className="border-t border-charcoal/20" />
+            )
+          })}
+        </div>
       </div>
+      
+      <style jsx global>{`
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+          animation: marquee 20s linear infinite;
+        }
+      `}</style>
     </section>
+    </>
   )
 }
