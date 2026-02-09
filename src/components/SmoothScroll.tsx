@@ -29,7 +29,6 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: !isTouch,
-      smoothTouch: true,
       touchMultiplier: isTouch ? 2.2 : 1.5,
     })
 
