@@ -119,7 +119,7 @@ export default function Hero() {
     <section
       ref={containerRef}
       id="hero"
-      className="relative min-h-[90vh] sm:min-h-screen flex flex-col justify-between px-4 sm:px-6 md:px-12 pt-16 sm:pt-28 md:pt-32 pb-6 md:pb-12 overflow-hidden"
+      className="relative min-h-[85vh] sm:min-h-screen flex flex-col justify-start sm:justify-between px-4 sm:px-6 md:px-12 pt-16 sm:pt-28 md:pt-32 pb-6 md:pb-12 overflow-hidden"
     >
       <div
         className="hero-orb absolute right-4 sm:right-10 md:right-16 top-1/2 -translate-y-1/2 grid pointer-events-none"
@@ -130,7 +130,7 @@ export default function Hero() {
       <div className="absolute bottom-1/4 left-12 w-24 h-px bg-charcoal/20 hidden lg:block" />
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col justify-center">
+      <div className="flex-1 flex flex-col justify-start pt-4 sm:pt-0 sm:justify-center">
         {/* Tagline */}
         <div ref={taglineRef} className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6 md:mb-8">
           <span className="tagline-item w-8 sm:w-12 h-px bg-rust" />
@@ -142,7 +142,7 @@ export default function Hero() {
         {/* Main title */}
         <h1
           ref={titleRef}
-          className="font-display text-[clamp(2.5rem,12vw,10rem)] font-bold leading-[0.9] tracking-tighter mb-6 sm:mb-8 will-change-transform"
+          className="font-display text-[clamp(3.5rem,14vw,10rem)] font-bold leading-[0.85] tracking-tighter mb-4 sm:mb-8 will-change-transform"
         >
           <span className="block overflow-hidden">
             {splitText('WE CRAFT')}
@@ -153,7 +153,7 @@ export default function Hero() {
         </h1>
 
         {/* Parallax Echo Text - EXPERIENCES */}
-        <div ref={echoContainerRef} className="text-container relative h-[clamp(2.5rem,12vw,10rem)]">
+        <div ref={echoContainerRef} className="text-container relative h-[clamp(4rem,16vw,10rem)]">
           <p data-speed="1">EXPERIENCES</p>
           <p data-speed="0.97">EXPERIENCES</p>
           <p data-speed="0.94">EXPERIENCES</p>
