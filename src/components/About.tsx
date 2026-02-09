@@ -24,8 +24,8 @@ export default function About() {
         const mobileWords = mobileSplit.words ?? []
         
         if (mobileWords.length > 0) {
-          // Start all words invisible
-          gsap.set(mobileWords, { opacity: 0 })
+          // Start with low opacity, then highlight on scroll
+          gsap.set(mobileWords, { opacity: 0.2 })
           
           const mobileCards = mobileCardsRef.current.children
           gsap.set(mobileCards, {
@@ -45,7 +45,7 @@ export default function About() {
             },
           })
 
-          // Reveal words in groups of ~8-9 (use stagger with overlap)
+          // Highlight words in groups of ~8-9 (use stagger with overlap)
           mobileTl.to(mobileWords, {
             opacity: 1,
             duration: 1,
@@ -80,8 +80,8 @@ export default function About() {
         const words = desktopSplit.words ?? []
         if (words.length === 0) return
 
-        // Start all words invisible
-        gsap.set(words, { opacity: 0 })
+        // Start with low opacity, then highlight on scroll
+        gsap.set(words, { opacity: 0.2 })
 
         const cards = desktopCards.children
         gsap.set(cards, {
@@ -101,7 +101,7 @@ export default function About() {
           },
         })
 
-        // Reveal words smoothly in groups
+        // Highlight words smoothly in groups
         tl.to(words, {
           opacity: 1,
           duration: 1,

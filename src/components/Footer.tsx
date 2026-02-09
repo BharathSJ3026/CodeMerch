@@ -7,12 +7,11 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
 
 const images = [
-    "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&auto=format&fit=crop&q=60",
-    "https://images.unsplash.com/photo-1614850523296-6313a402f002?w=500&auto=format&fit=crop&q=60",
-    "https://images.unsplash.com/photo-1633633845028-1f19f6a27ce5?w=500&auto=format&fit=crop&q=60",
-    "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=500&auto=format&fit=crop&q=60",
-    "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=500&auto=format&fit=crop&q=60",
-    "https://images.unsplash.com/photo-1515630278258-407f66498911?w=500&auto=format&fit=crop&q=60"
+  '/Web-Design.webp',
+  '/Development.webp',
+  '/agentic_web.webp',
+  '/E-commerce.webp',
+  '/video_editing.webp',
 ]
 
 export default function Footer() {
@@ -23,9 +22,11 @@ export default function Footer() {
   const imageRefs = useRef<HTMLImageElement[]>([])
   const activeImageIndex = useRef(0)
   const lastMousePos = useRef({ x: 0, y: 0 })
-  const lastRenderTime = useRef(0)
+  const isHovering = useRef(false)
+  const hoverIntervalId = useRef<number | null>(null)
 
   useEffect(() => {
+    let cleanupLogoListeners: (() => void) | null = null
     const ctx = gsap.context(() => {
       // Heading animation
       gsap.from(headingRef.current, {
@@ -56,43 +57,71 @@ export default function Footer() {
       // Hover Image Trail Logic
       const logo = document.getElementById('footer-logo')
       if (logo) {
-        logo.addEventListener('mousemove', (e) => {
-            const now = Date.now()
-            const mouseDist = Math.hypot(e.clientX - lastMousePos.current.x, e.clientY - lastMousePos.current.y)
-            
-            // Only spawn image if moved enough distance and enough time passed (thottling)
-            if (mouseDist > 50 && now - lastRenderTime.current > 100) {
-                const img = imageRefs.current[activeImageIndex.current]
-                
-                // Get logo bounds to calculate relative position or just use page coordinates
-                // Using fixed position for simplicity regarding the cursor
-                gsap.set(img, {
-                    x: e.clientX,
-                    y: e.clientY,
-                    opacity: 1,
-                    scale: 1,
-                    zIndex: 20,
-                    rotation: Math.random() * 20 - 10
-                })
+        const spawnImage = () => {
+          if (!isHovering.current) return
+          const img = imageRefs.current[activeImageIndex.current]
+          if (!img) return
 
-                gsap.to(img, {
-                    opacity: 0,
-                    scale: 0.5,
-                    duration: 0.8,
-                    ease: "power2.out",
-                    delay: 0.2
-                })
+          gsap.set(img, {
+            x: lastMousePos.current.x,
+            y: lastMousePos.current.y,
+            opacity: 1,
+            scale: 1,
+            zIndex: 20,
+            rotation: Math.random() * 20 - 10,
+          })
 
-                activeImageIndex.current = (activeImageIndex.current + 1) % images.length
-                lastRenderTime.current = now
-                lastMousePos.current = { x: e.clientX, y: e.clientY }
-            }
-        })
+          gsap.to(img, {
+            opacity: 0,
+            scale: 0.5,
+            duration: 0.8,
+            ease: 'power2.out',
+            delay: 0.2,
+          })
+
+          activeImageIndex.current = (activeImageIndex.current + 1) % images.length
+        }
+
+        const handleMouseMove = (e: MouseEvent) => {
+          lastMousePos.current = { x: e.clientX, y: e.clientY }
+        }
+
+        const handleMouseEnter = () => {
+          isHovering.current = true
+          if (hoverIntervalId.current === null) {
+            hoverIntervalId.current = window.setInterval(spawnImage, 120)
+          }
+        }
+
+        const handleMouseLeave = () => {
+          isHovering.current = false
+          if (hoverIntervalId.current !== null) {
+            window.clearInterval(hoverIntervalId.current)
+            hoverIntervalId.current = null
+          }
+        }
+
+        logo.addEventListener('mousemove', handleMouseMove)
+        logo.addEventListener('mouseenter', handleMouseEnter)
+        logo.addEventListener('mouseleave', handleMouseLeave)
+
+        cleanupLogoListeners = () => {
+          logo.removeEventListener('mousemove', handleMouseMove)
+          logo.removeEventListener('mouseenter', handleMouseEnter)
+          logo.removeEventListener('mouseleave', handleMouseLeave)
+          if (hoverIntervalId.current !== null) {
+            window.clearInterval(hoverIntervalId.current)
+            hoverIntervalId.current = null
+          }
+        }
       }
 
     })
 
-    return () => ctx.revert()
+    return () => {
+      if (cleanupLogoListeners) cleanupLogoListeners()
+      ctx.revert()
+    }
   }, [])
 
   return (

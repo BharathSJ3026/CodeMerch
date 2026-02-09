@@ -13,28 +13,35 @@ const services = [
     title: 'Web Design',
     description: 'Bespoke digital experiences that captivate and convert.',
     tags: ['UI/UX', 'Prototyping', 'Design Systems'],
-    image: '/Web-Design.jpg',
+    image: '/Web-Design.webp',
   },
   {
     number: '02',
     title: 'Development',
     description: 'Clean, performant code that brings designs to life.',
     tags: ['React', 'Next.js', 'Node.js'],
-    image: '/Development.jpg',
+    image: '/Development.webp',
   },
   {
     number: '03',
-    title: 'Branding',
-    description: 'Identity systems that tell your story.',
-    tags: ['Logo Design', 'Guidelines', 'Strategy'],
-    image: '/Branding.jpg',
+    title: 'Agentic AI Automation',
+    description: 'Autonomous workflows that scale teams and operations.',
+    tags: ['AI Agents', 'Workflow Orchestration', 'Integrations'],
+    image: '/agentic_web.webp',
   },
   {
     number: '04',
     title: 'E-Commerce',
     description: 'Online stores built to sell.',
     tags: ['Shopify', 'Custom Builds', 'Conversion'],
-    image: '/E-commerce.png',
+    image: '/E-commerce.webp',
+  },
+  {
+    number: '05',
+    title: 'Video Editing',
+    description: 'Cinematic edits that sharpen the message.',
+    tags: ['Short Form', 'Color', 'Sound Design'],
+    image: '/video_editing.webp',
   },
 ]
 
@@ -45,7 +52,151 @@ export default function Services() {
   const curtainLeftRefs = useRef<(HTMLDivElement | null)[]>([])
   const curtainRightRefs = useRef<(HTMLDivElement | null)[]>([])
   const marqueeRefs = useRef<(HTMLDivElement | null)[]>([])
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(0)
+  const mobileCurtainLeftRefs = useRef<(HTMLDivElement | null)[]>([])
+  const mobileCurtainRightRefs = useRef<(HTMLDivElement | null)[]>([])
+  const hoverIndexRef = useRef<number | null>(null)
+  const closeTimerRef = useRef<number | null>(null)
+  const [activeIndex, setActiveIndex] = useState<number | null>(null)
+  const [isDesktop, setIsDesktop] = useState(false)
+  const [viewportReady, setViewportReady] = useState(false)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const media = window.matchMedia('(min-width: 768px)')
+    const handleChange = () => {
+      setIsDesktop(media.matches)
+      setViewportReady(true)
+    }
+
+    handleChange()
+    media.addEventListener('change', handleChange)
+
+    return () => {
+      media.removeEventListener('change', handleChange)
+    }
+  }, [])
+
+  const openDesktop = (index: number) => {
+    if (activeIndex === index) return
+
+    imageRefs.current.forEach((el, i) => {
+      if (el && i !== index) {
+        gsap.set(el, { visibility: 'hidden', zIndex: 1 })
+      }
+    })
+
+    setActiveIndex(index)
+
+    const leftCurtain = curtainLeftRefs.current[index]
+    const rightCurtain = curtainRightRefs.current[index]
+    const imageEl = imageRefs.current[index]
+
+    if (leftCurtain && rightCurtain && imageEl) {
+      gsap.killTweensOf([leftCurtain, rightCurtain])
+      gsap.set([leftCurtain, rightCurtain], { xPercent: 0 })
+      gsap.set(imageEl, { visibility: 'visible', zIndex: 10 })
+
+      gsap.to(leftCurtain, {
+        xPercent: -100,
+        duration: 0.5,
+        ease: 'power3.inOut',
+      })
+      gsap.to(rightCurtain, {
+        xPercent: 100,
+        duration: 0.5,
+        ease: 'power3.inOut',
+      })
+    }
+
+    const marqueeEl = marqueeRefs.current[index]
+    if (marqueeEl) {
+      gsap.killTweensOf(marqueeEl)
+      gsap.set(marqueeEl, { x: 0 })
+      gsap.to(marqueeEl, {
+        x: '-50%',
+        duration: 15,
+        ease: 'none',
+        repeat: -1,
+      })
+    }
+  }
+
+  const closeDesktop = (index: number) => {
+    const leftCurtain = curtainLeftRefs.current[index]
+    const rightCurtain = curtainRightRefs.current[index]
+    const imageEl = imageRefs.current[index]
+
+    if (leftCurtain && rightCurtain && imageEl) {
+      gsap.killTweensOf([leftCurtain, rightCurtain])
+
+      gsap.to(leftCurtain, {
+        xPercent: 0,
+        duration: 0.3,
+        ease: 'power2.in',
+      })
+      gsap.to(rightCurtain, {
+        xPercent: 0,
+        duration: 0.3,
+        ease: 'power2.in',
+        onComplete: () => {
+          gsap.set(imageEl, { visibility: 'hidden', zIndex: 1 })
+          setActiveIndex(null)
+        },
+      })
+    } else {
+      setActiveIndex(null)
+    }
+
+    const marqueeEl = marqueeRefs.current[index]
+    if (marqueeEl) {
+      gsap.killTweensOf(marqueeEl)
+      gsap.to(marqueeEl, {
+        x: 0,
+        duration: 0.3,
+        ease: 'power2.out',
+      })
+    }
+  }
+
+  const openMobile = (index: number) => {
+    const leftCurtain = mobileCurtainLeftRefs.current[index]
+    const rightCurtain = mobileCurtainRightRefs.current[index]
+
+    if (leftCurtain && rightCurtain) {
+      gsap.killTweensOf([leftCurtain, rightCurtain])
+      gsap.set([leftCurtain, rightCurtain], { xPercent: 0 })
+      gsap.to(leftCurtain, {
+        xPercent: -100,
+        duration: 0.5,
+        ease: 'power3.inOut',
+      })
+      gsap.to(rightCurtain, {
+        xPercent: 100,
+        duration: 0.5,
+        ease: 'power3.inOut',
+      })
+    }
+  }
+
+  const closeMobile = (index: number) => {
+    const leftCurtain = mobileCurtainLeftRefs.current[index]
+    const rightCurtain = mobileCurtainRightRefs.current[index]
+
+    if (leftCurtain && rightCurtain) {
+      gsap.killTweensOf([leftCurtain, rightCurtain])
+      gsap.to(leftCurtain, {
+        xPercent: 0,
+        duration: 0.3,
+        ease: 'power2.in',
+      })
+      gsap.to(rightCurtain, {
+        xPercent: 0,
+        duration: 0.3,
+        ease: 'power2.in',
+      })
+    }
+  }
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -60,136 +211,45 @@ export default function Services() {
         y: 50,
         opacity: 0,
       })
-      
-      // Initialize first item (Web Design) as open
-      const firstLeftCurtain = curtainLeftRefs.current[0]
-      const firstRightCurtain = curtainRightRefs.current[0]
-      const firstImage = imageRefs.current[0]
-      const firstMarquee = marqueeRefs.current[0]
-      
-      if (firstLeftCurtain && firstRightCurtain && firstImage) {
-        gsap.set([firstLeftCurtain, firstRightCurtain], { xPercent: 0 })
-        gsap.set(firstImage, { visibility: 'visible', zIndex: 10 })
-        
-        // Animate curtains open after a short delay
-        gsap.to(firstLeftCurtain, {
-          xPercent: -100,
-          duration: 0.8,
-          delay: 0.3,
-          ease: 'power3.inOut',
-        })
-        gsap.to(firstRightCurtain, { 
-          xPercent: 100,
-          duration: 0.8,
-          delay: 0.3,
-          ease: 'power3.inOut',
-        })
-      }
-      
-      if (firstMarquee) {
-        gsap.to(firstMarquee, {
-          x: '-50%',
-          duration: 15,
-          delay: 0.5,
-          ease: 'none',
-          repeat: -1,
-        })
-      }
     }, containerRef)
 
     return () => ctx.revert()
   }, [])
 
-  const handleMouseEnter = (index: number) => {
-    // Don't re-trigger if already hovered
-    if (hoveredIndex === index) return
-    
-    // Hide any previously visible image
-    imageRefs.current.forEach((el, i) => {
-      if (el && i !== index) {
-        gsap.set(el, { visibility: 'hidden', zIndex: 1 })
-      }
+  useEffect(() => {
+    if (!viewportReady) return
+
+    if (!isDesktop) {
+      setActiveIndex(0)
+      openMobile(0)
+      return
+    }
+
+    setActiveIndex(null)
+    imageRefs.current.forEach((el) => {
+      if (el) gsap.set(el, { visibility: 'hidden', zIndex: 1 })
     })
-    
-    setHoveredIndex(index)
-    
-    // Curtain open animation - both curtains slide outward
-    const leftCurtain = curtainLeftRefs.current[index]
-    const rightCurtain = curtainRightRefs.current[index]
-    const imageEl = imageRefs.current[index]
-    
-    if (leftCurtain && rightCurtain && imageEl) {
-      gsap.killTweensOf([leftCurtain, rightCurtain])
-      
-      // Set initial state - curtains closed, image visible on top
-      gsap.set([leftCurtain, rightCurtain], { xPercent: 0 })
-      gsap.set(imageEl, { visibility: 'visible', zIndex: 10 })
-      
-      // Animate curtains opening
-      gsap.to(leftCurtain, {
-        xPercent: -100,
-        duration: 0.5,
-        ease: 'power3.inOut',
-      })
-      gsap.to(rightCurtain, {
-        xPercent: 100,
-        duration: 0.5,
-        ease: 'power3.inOut',
-      })
+  }, [isDesktop, viewportReady])
+
+  useEffect(() => {
+    return () => {
+      if (closeTimerRef.current !== null) {
+        window.clearTimeout(closeTimerRef.current)
+        closeTimerRef.current = null
+      }
+    }
+  }, [])
+
+  const scheduleCloseDesktop = (index: number) => {
+    if (closeTimerRef.current !== null) {
+      window.clearTimeout(closeTimerRef.current)
     }
 
-    // Start marquee animation
-    const marqueeEl = marqueeRefs.current[index]
-    if (marqueeEl) {
-      gsap.killTweensOf(marqueeEl)
-      gsap.set(marqueeEl, { x: 0 })
-      gsap.to(marqueeEl, {
-        x: '-50%',
-        duration: 15,
-        ease: 'none',
-        repeat: -1,
-      })
-    }
-  }
-
-  const handleMouseLeave = (index: number) => {
-    // Curtain close animation
-    const leftCurtain = curtainLeftRefs.current[index]
-    const rightCurtain = curtainRightRefs.current[index]
-    const imageEl = imageRefs.current[index]
-    
-    if (leftCurtain && rightCurtain && imageEl) {
-      gsap.killTweensOf([leftCurtain, rightCurtain])
-      
-      // Animate curtains closing
-      gsap.to(leftCurtain, {
-        xPercent: 0,
-        duration: 0.3,
-        ease: 'power2.in',
-      })
-      gsap.to(rightCurtain, {
-        xPercent: 0,
-        duration: 0.3,
-        ease: 'power2.in',
-        onComplete: () => {
-          gsap.set(imageEl, { visibility: 'hidden', zIndex: 1 })
-          setHoveredIndex(null)
-        }
-      })
-    } else {
-      setHoveredIndex(null)
-    }
-
-    // Stop marquee animation
-    const marqueeEl = marqueeRefs.current[index]
-    if (marqueeEl) {
-      gsap.killTweensOf(marqueeEl)
-      gsap.to(marqueeEl, {
-        x: 0,
-        duration: 0.3,
-        ease: 'power2.out',
-      })
-    }
+    closeTimerRef.current = window.setTimeout(() => {
+      if (hoverIndexRef.current !== index) {
+        closeDesktop(index)
+      }
+    }, 120)
   }
 
   return (
@@ -200,12 +260,12 @@ export default function Services() {
         className="relative z-20 overflow-hidden shadow-[0_-15px_30px_-10px_rgba(0,0,0,0.3)] bg-charcoal"
       >
         {/* Floating Image Container - Center of screen (Desktop only) */}
-        <div className="hidden md:flex fixed inset-0 pointer-events-none z-30 items-center justify-center">
-          {services.map((service, i) => (
+        <div className="hidden md:flex fixed inset-y-0 right-80 pointer-events-none z-30 items-center justify-end pr-8 md:pr-12">
+          {services.map((service, i) => ( 
             <div
               key={`image-${service.number}`}
               ref={(el) => { imageRefs.current[i] = el }}
-              className="absolute w-[400px] h-[500px] rounded-2xl overflow-hidden shadow-2xl"
+              className="absolute w-[320px] h-[420px] rounded-2xl overflow-hidden shadow-2xl"
               style={{ 
                 visibility: 'hidden',
                 opacity: 1,
@@ -227,7 +287,6 @@ export default function Services() {
                 fill
                 className="object-cover"
                 sizes="400px"
-                priority
               />
               <div className="absolute inset-0 bg-gradient-to-t from-charcoal/60 to-transparent z-[5]" />
             </div>
@@ -245,24 +304,46 @@ export default function Services() {
           {/* Services List */}
           <div className="flex flex-col">
             {services.map((service, i) => {
-              const isHovered = hoveredIndex === i
+              const isHovered = activeIndex === i
               return (
                 <div
                   key={service.number}
                   className="relative border-t border-cream/20 last:border-b cursor-pointer group"
-                  onMouseEnter={() => handleMouseEnter(i)}
-                  onMouseLeave={() => handleMouseLeave(i)}
-                  onClick={() => {
-                    if (hoveredIndex === i) {
-                      setHoveredIndex(null)
-                    } else {
-                      handleMouseEnter(i)
+                  onMouseEnter={() => {
+                    if (!isDesktop) return
+
+                    hoverIndexRef.current = i
+                    if (closeTimerRef.current !== null) {
+                      window.clearTimeout(closeTimerRef.current)
+                      closeTimerRef.current = null
                     }
+                    openDesktop(i)
+                  }}
+                  onMouseLeave={() => {
+                    if (!isDesktop) return
+
+                    hoverIndexRef.current = null
+                    scheduleCloseDesktop(i)
+                  }}
+                  onClick={() => {
+                    if (isDesktop) return
+
+                    if (activeIndex === i) {
+                      closeMobile(i)
+                      setActiveIndex(null)
+                      return
+                    }
+
+                    if (activeIndex !== null) {
+                      closeMobile(activeIndex)
+                    }
+                    setActiveIndex(i)
+                    openMobile(i)
                   }}
                 >
                   {/* Background Marquee - Only visible on hover */}
                   <div 
-                    className={`absolute inset-0 flex items-center overflow-hidden transition-opacity duration-300 ${
+                    className={`absolute inset-0 hidden md:flex items-center overflow-hidden transition-opacity duration-300 ${
                       isHovered ? 'opacity-10' : 'opacity-0'
                     }`}
                   >
@@ -347,6 +428,14 @@ export default function Services() {
                   >
                     {/* Mobile Image with curtain effect */}
                     <div className="relative w-full h-40 sm:h-48 rounded-lg overflow-hidden mb-3 mx-auto max-w-sm">
+                      <div 
+                        ref={(el) => { mobileCurtainLeftRefs.current[i] = el }}
+                        className="absolute left-0 top-0 w-1/2 h-full bg-charcoal z-10"
+                      />
+                      <div 
+                        ref={(el) => { mobileCurtainRightRefs.current[i] = el }}
+                        className="absolute right-0 top-0 w-1/2 h-full bg-charcoal z-10"
+                      />
                       <Image
                         src={service.image}
                         alt={service.title}
