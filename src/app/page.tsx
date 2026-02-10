@@ -9,6 +9,7 @@ import Services from '@/components/Services'
 import Work from '@/components/Work'
 import Contact from '@/components/Contact'
 import Footer from '@/components/Footer'
+import FooterLinks from '@/components/FooterLinks'
 import LoadingScreen from '@/components/LoadingScreen'
 
 export default function Home() {
@@ -31,6 +32,7 @@ export default function Home() {
       </div>
       {/* Footer sits behind the content */}
       <Footer />
+      <FooterLinks />
     </main>
   )
 }
