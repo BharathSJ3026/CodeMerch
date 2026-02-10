@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -9,37 +9,75 @@ gsap.registerPlugin(ScrollTrigger)
 const projects = [
   {
     id: 1,
-    title: 'Stellar Labs',
-    category: 'Web Design & Development',
+    title: 'Elite Prop India',
+    category: 'A Prop trading firm',
+    description: 'Full-stack property listing and management platform',
     year: '2025',
+    image1: '/PropLanding.png',
+    image2: '/propdashboard.png',
     color: '#D4552A',
+    link: 'https://elitepropindia.com',
   },
   {
     id: 2,
-    title: 'Nomad Coffee',
-    category: 'E-Commerce / Branding',
+    title: 'Study Buddy',
+    category: 'EdTech Web App',
+    description: 'Collaborative study platform for MVJCE students',
     year: '2025',
+    image1: '/Studbuddy.png',
+    image2: '/Studybuddydash.png',
     color: '#7A8B6E',
+    link: 'https://study-buddy-for-mvjce.vercel.app',
   },
   {
     id: 3,
-    title: 'Archetype Studio',
-    category: 'Brand Identity',
-    year: '2024',
-    color: '#E8B84A',
-  },
-  {
-    id: 4,
-    title: 'Velocity Motors',
-    category: 'Web Application',
-    year: '2024',
+    title: 'Obsidian',
+    category: 'AI / RAG Application',
+    description: 'Chat interface for personal documents (RAG)',
+    year: '2025',
+    image1: '/obsidian_landing.png',
+    image2: '/Obsidian_chat.png',
     color: '#1A1A1A',
+    link: null,
   },
 ]
 
 export default function Work() {
   const sectionRef = useRef<HTMLElement>(null)
   const projectRefs = useRef<HTMLDivElement[]>([])
+  const cursorRef = useRef<HTMLDivElement>(null)
+  const cursorPos = useRef({ x: 0, y: 0 })
+  const targetPos = useRef({ x: 0, y: 0 })
+  const rafId = useRef<number>(0)
+
+  const [cursorVisible, setCursorVisible] = useState(false)
+  const [cursorColor, setCursorColor] = useState('#D4552A')
+  const [cursorLabel, setCursorLabel] = useState('open')
+
+  // Smooth cursor follow loop
+  const animateCursor = useCallback(() => {
+    cursorPos.current.x += (targetPos.current.x - cursorPos.current.x) * 0.15
+    cursorPos.current.y += (targetPos.current.y - cursorPos.current.y) * 0.15
+
+    if (cursorRef.current) {
+      cursorRef.current.style.transform = `translate(${cursorPos.current.x}px, ${cursorPos.current.y}px)`
+    }
+    rafId.current = requestAnimationFrame(animateCursor)
+  }, [])
+
+  useEffect(() => {
+    rafId.current = requestAnimationFrame(animateCursor)
+    return () => cancelAnimationFrame(rafId.current)
+  }, [animateCursor])
+
+  // Global mouse tracking
+  useEffect(() => {
+    const handleGlobalMouse = (e: MouseEvent) => {
+      targetPos.current = { x: e.clientX, y: e.clientY }
+    }
+    window.addEventListener('mousemove', handleGlobalMouse)
+    return () => window.removeEventListener('mousemove', handleGlobalMouse)
+  }, [])
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -55,36 +93,19 @@ export default function Work() {
         },
       })
 
-      // Project cards
+      // Project cards scroll-in
       projectRefs.current.forEach((ref) => {
         if (!ref) return
 
         gsap.from(ref, {
-          y: 100,
+          y: 80,
           opacity: 0,
           duration: 0.8,
           scrollTrigger: {
             trigger: ref,
-            start: 'top 85%',
+            start: 'top 88%',
             toggleActions: 'play none none reverse',
           },
-        })
-
-        // Hover effects
-        const image = ref.querySelector('.project-image')
-        const title = ref.querySelector('.project-title')
-        const overlay = ref.querySelector('.project-overlay')
-
-        ref.addEventListener('mouseenter', () => {
-          gsap.to(image, { scale: 1.05, duration: 0.6, ease: 'power3.out' })
-          gsap.to(title, { y: -10, duration: 0.4, ease: 'power3.out' })
-          gsap.to(overlay, { opacity: 1, duration: 0.4 })
-        })
-
-        ref.addEventListener('mouseleave', () => {
-          gsap.to(image, { scale: 1, duration: 0.6, ease: 'power3.out' })
-          gsap.to(title, { y: 0, duration: 0.4, ease: 'power3.out' })
-          gsap.to(overlay, { opacity: 0, duration: 0.4 })
         })
       })
     })
@@ -92,12 +113,50 @@ export default function Work() {
     return () => ctx.revert()
   }, [])
 
+  const handleProjectEnter = (project: typeof projects[0]) => {
+    setCursorVisible(true)
+    setCursorColor(project.color)
+    setCursorLabel(project.link ? 'open' : 'view')
+  }
+
+  const handleProjectLeave = () => {
+    setCursorVisible(false)
+  }
+
+  const handleProjectClick = (project: typeof projects[0]) => {
+    if (project.link) {
+      window.open(project.link, '_blank', 'noopener,noreferrer')
+    }
+  }
+
   return (
     <section
       ref={sectionRef}
       id="work"
       className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 md:px-12 overflow-hidden"
     >
+      {/* Custom project cursor */}
+      <div
+        ref={cursorRef}
+        className="project-cursor fixed top-0 left-0 z-[9999] pointer-events-none"
+        style={{
+          opacity: cursorVisible ? 1 : 0,
+          transition: 'opacity 0.25s ease',
+        }}
+      >
+        <div
+          className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-mono font-semibold -translate-x-1/2 -translate-y-1/2 whitespace-nowrap"
+          style={{
+            backgroundColor: cursorColor,
+            color: cursorColor === '#1A1A1A' ? '#F5F0E8' : '#0D0D0D',
+            transition: 'background-color 0.35s ease, color 0.35s ease',
+          }}
+        >
+          <span className="w-2 h-2 rounded-full" style={{ backgroundColor: cursorColor === '#1A1A1A' ? '#F5F0E8' : '#0D0D0D' }} />
+          {cursorLabel}
+        </div>
+      </div>
+
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 sm:gap-0 mb-8 sm:mb-12 md:mb-16">
         <div>
           <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6 md:mb-8">
@@ -107,76 +166,83 @@ export default function Work() {
           </div>
 
           <h2 className="work-heading font-display text-[clamp(2rem,8vw,5rem)] font-bold leading-[0.95] tracking-tight will-change-transform">
-            Projects that
-            <br />
-            <span className="text-stroke">speak volumes</span>
+            Featured Work
           </h2>
         </div>
-
-        <a
-          href="#"
-          className="hidden md:flex items-center gap-4 group"
-          data-cursor-hover
-        >
-          <span className="font-mono text-sm tracking-wide">VIEW ALL WORK</span>
-          <span className="w-12 h-px bg-charcoal group-hover:w-20 transition-all duration-300" />
-        </a>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 md:gap-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 md:gap-8">
         {projects.map((project, i) => (
           <div
             key={project.id}
             ref={(el) => { if (el) projectRefs.current[i] = el }}
-            className={`group cursor-pointer ${i % 2 === 1 ? 'md:mt-16 lg:mt-24' : ''}`}
-            data-cursor-hover
+            className="project-card group"
+            style={{ cursor: cursorVisible ? 'none' : 'pointer' }}
+            onMouseEnter={() => handleProjectEnter(project)}
+            onMouseLeave={handleProjectLeave}
+            onClick={() => handleProjectClick(project)}
           >
-            <div className="relative aspect-[4/3] overflow-hidden mb-4 sm:mb-6">
-              <div 
-                className="project-image absolute inset-0 transition-transform duration-700 will-change-transform"
-                style={{ backgroundColor: project.color }}
-              >
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white/10">
-                    {project.id.toString().padStart(2, '0')}
-                  </span>
-                </div>
+            {/* Image container */}
+            <div className="relative aspect-[4/3] overflow-hidden rounded-lg mb-4">
+              {/* Base image (image1) */}
+              <img
+                src={project.image1}
+                alt={project.title}
+                className="project-img-base absolute inset-0 w-full h-full object-cover"
+              />
+
+              {/* Hover image (image2) — zoom-out reveal */}
+              <div className="project-img-hover-wrap absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100">
+                <img
+                  src={project.image2}
+                  alt={`${project.title} detail`}
+                  className="project-img-hover w-full h-full object-cover rounded-lg scale-[0.4] transition-transform duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-100"
+                />
               </div>
-              <div className="project-overlay absolute inset-0 bg-charcoal/20 opacity-0 transition-opacity" />
-              
+
+              {/* Subtle overlay */}
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500" />
+
               {/* Corner brackets */}
-              <div className="absolute top-4 left-4 w-6 h-6 border-l-2 border-t-2 border-cream opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="absolute top-4 right-4 w-6 h-6 border-r-2 border-t-2 border-cream opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="absolute bottom-4 left-4 w-6 h-6 border-l-2 border-b-2 border-cream opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="absolute bottom-4 right-4 w-6 h-6 border-r-2 border-b-2 border-cream opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute top-3 left-3 w-5 h-5 border-l-2 border-t-2 border-cream opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute top-3 right-3 w-5 h-5 border-r-2 border-t-2 border-cream opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute bottom-3 left-3 w-5 h-5 border-l-2 border-b-2 border-cream opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute bottom-3 right-3 w-5 h-5 border-r-2 border-b-2 border-cream opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </div>
 
-            <div className="flex items-start justify-between gap-4">
+            {/* Project info */}
+            <div className="flex items-start justify-between gap-3">
               <div className="flex-1 min-w-0">
-                <h3 className="project-title font-display text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-1 sm:mb-2 will-change-transform truncate">
+                <h3 className="font-display text-base sm:text-lg md:text-xl font-bold mb-1 truncate transition-colors duration-300 group-hover:text-rust">
                   {project.title}
                 </h3>
-                <p className="font-mono text-xs sm:text-sm text-charcoal/60">
-                  {project.category}
+                <p className="font-mono text-[11px] sm:text-xs text-charcoal/60 leading-snug">
+                  {project.description}
                 </p>
               </div>
-              <span className="font-mono text-xs sm:text-sm text-charcoal/40 flex-shrink-0">
-                {project.year}
-              </span>
+              <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                <span className="font-mono text-[11px] text-charcoal/40">{project.year}</span>
+                <span
+                  className="inline-block w-2 h-2 rounded-full"
+                  style={{ backgroundColor: project.color }}
+                />
+              </div>
+            </div>
+
+            {/* Tags */}
+            <div className="flex flex-wrap gap-2 mt-2">
+              {project.category.split(' / ').map((tag) => (
+                <span
+                  key={tag}
+                  className="font-mono text-[10px] tracking-wider uppercase px-2 py-0.5 border border-charcoal/15 rounded-full text-charcoal/50"
+                >
+                  {tag}
+                </span>
+              ))}
             </div>
           </div>
         ))}
       </div>
-
-      {/* Mobile view all link */}
-      <a
-        href="#"
-        className="flex md:hidden items-center gap-4 mt-8 sm:mt-12"
-        data-cursor-hover
-      >
-        <span className="font-mono text-xs sm:text-sm tracking-wide">VIEW ALL WORK</span>
-        <span className="w-8 sm:w-12 h-px bg-charcoal" />
-      </a>
     </section>
   )
 }

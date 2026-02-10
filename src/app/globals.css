@@ -456,6 +456,14 @@ body {
   .cursor-follower {
     display: none !important;
   }
+  .project-cursor {
+    display: none !important;
+  }
+}
+
+/* Project card cursor override */
+.project-card:hover {
+  cursor: none;
 }
 
 /* Optimize scrollbar on mobile */
