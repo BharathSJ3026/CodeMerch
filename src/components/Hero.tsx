@@ -47,10 +47,11 @@ export default function Hero() {
         // Parallax scroll effect - echo layers trail behind main layer
         const echoLayers = echoContainer.querySelectorAll('p')
         echoLayers.forEach((layer, index) => {
-          if (index === 0) return // Main layer doesn't move
+          if (index === 0) return // Main layer stays fixed
 
           const speed = parseFloat(layer.getAttribute('data-speed') || '1')
-          const yOffset = (1 - speed) * 300 // Offset creates the trailing effect
+          // Larger multiplier per layer so echoes spread downward more visibly
+          const yOffset = (1 - speed) * 500
 
           gsap.to(layer, {
             y: yOffset,
@@ -59,7 +60,7 @@ export default function Hero() {
               trigger: containerRef.current,
               start: 'top top',
               end: 'bottom top',
-              scrub: true,
+              scrub: 0.6, // smooth interpolation instead of instant
             },
           })
         })
@@ -92,16 +93,7 @@ export default function Hero() {
         ease: 'power2.inOut',
       })
 
-      // Parallax on scroll for main title
-      gsap.to(titleRef.current, {
-        yPercent: 30,
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: true,
-        },
-      })
+      // Main title stays pinned — no parallax movement
     })
 
     return () => ctx.revert()
@@ -159,6 +151,7 @@ export default function Hero() {
           <p data-speed="0.94">EXPERIENCES</p>
           <p data-speed="0.91">EXPERIENCES</p>
           <p data-speed="0.88">EXPERIENCES</p>
+          <p data-speed="0.85">EXPERIENCES</p>
         </div>
       </div>
 

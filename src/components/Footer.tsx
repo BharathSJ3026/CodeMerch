@@ -21,12 +21,11 @@ export default function Footer() {
   // Image trail references
   const imageRefs = useRef<HTMLImageElement[]>([])
   const activeImageIndex = useRef(0)
-  const lastMousePos = useRef({ x: 0, y: 0 })
-  const isHovering = useRef(false)
-  const hoverIntervalId = useRef<number | null>(null)
+  const lastSpawnPos = useRef({ x: 0, y: 0 })
+  const zCounter = useRef(0)
 
   useEffect(() => {
-    let cleanupLogoListeners: (() => void) | null = null
+    let cleanupListeners: (() => void) | null = null
     const ctx = gsap.context(() => {
       // Heading animation
       gsap.from(headingRef.current, {
@@ -53,73 +52,85 @@ export default function Footer() {
         },
       })
 
+      // Hover Image Trail Logic — only on the "CODE" word
+      const codeWord = document.getElementById('footer-code-word')
+      if (codeWord) {
+        const DISTANCE_THRESHOLD = 60 // minimum px between spawns
 
-      // Hover Image Trail Logic
-      const logo = document.getElementById('footer-logo')
-      if (logo) {
-        const spawnImage = () => {
-          if (!isHovering.current) return
+        const spawnImage = (x: number, y: number) => {
           const img = imageRefs.current[activeImageIndex.current]
           if (!img) return
 
-          gsap.set(img, {
-            x: lastMousePos.current.x,
-            y: lastMousePos.current.y,
-            opacity: 1,
-            scale: 1,
-            zIndex: 20,
+          // Kill any running tweens on this image so it resets cleanly
+          gsap.killTweensOf(img)
+          zCounter.current++
+
+          // Use a GSAP timeline for a single smooth sequence
+          const tl = gsap.timeline()
+          tl.set(img, {
+            x,
+            y,
+            opacity: 0,
+            scale: 0.3,
+            zIndex: zCounter.current,
             rotation: Math.random() * 20 - 10,
           })
-
-          gsap.to(img, {
-            opacity: 0,
-            scale: 0.5,
-            duration: 0.8,
+          // Smoothly expand and fade in
+          tl.to(img, {
+            opacity: 1,
+            scale: 1,
+            duration: 0.35,
             ease: 'power2.out',
-            delay: 0.2,
           })
+          // Hold briefly, then smoothly shrink and fade out
+          tl.to(img, {
+            opacity: 0,
+            scale: 0.7,
+            y: y + 30,
+            duration: 0.5,
+            ease: 'power1.in',
+          }, '+=0.25')
 
           activeImageIndex.current = (activeImageIndex.current + 1) % images.length
         }
 
         const handleMouseMove = (e: MouseEvent) => {
-          lastMousePos.current = { x: e.clientX, y: e.clientY }
+          const dx = e.clientX - lastSpawnPos.current.x
+          const dy = e.clientY - lastSpawnPos.current.y
+          const dist = Math.sqrt(dx * dx + dy * dy)
+
+          if (dist >= DISTANCE_THRESHOLD) {
+            lastSpawnPos.current = { x: e.clientX, y: e.clientY }
+            spawnImage(e.clientX, e.clientY)
+          }
         }
 
-        const handleMouseEnter = () => {
-          isHovering.current = true
-          if (hoverIntervalId.current === null) {
-            hoverIntervalId.current = window.setInterval(spawnImage, 120)
-          }
+        const handleMouseEnter = (e: MouseEvent) => {
+          lastSpawnPos.current = { x: e.clientX, y: e.clientY }
+          spawnImage(e.clientX, e.clientY)
         }
 
         const handleMouseLeave = () => {
-          isHovering.current = false
-          if (hoverIntervalId.current !== null) {
-            window.clearInterval(hoverIntervalId.current)
-            hoverIntervalId.current = null
-          }
+          // Fade out any remaining visible images
+          imageRefs.current.forEach((img) => {
+            gsap.to(img, { opacity: 0, duration: 0.3, ease: 'power2.out' })
+          })
         }
 
-        logo.addEventListener('mousemove', handleMouseMove)
-        logo.addEventListener('mouseenter', handleMouseEnter)
-        logo.addEventListener('mouseleave', handleMouseLeave)
+        codeWord.addEventListener('mousemove', handleMouseMove)
+        codeWord.addEventListener('mouseenter', handleMouseEnter)
+        codeWord.addEventListener('mouseleave', handleMouseLeave)
 
-        cleanupLogoListeners = () => {
-          logo.removeEventListener('mousemove', handleMouseMove)
-          logo.removeEventListener('mouseenter', handleMouseEnter)
-          logo.removeEventListener('mouseleave', handleMouseLeave)
-          if (hoverIntervalId.current !== null) {
-            window.clearInterval(hoverIntervalId.current)
-            hoverIntervalId.current = null
-          }
+        cleanupListeners = () => {
+          codeWord.removeEventListener('mousemove', handleMouseMove)
+          codeWord.removeEventListener('mouseenter', handleMouseEnter)
+          codeWord.removeEventListener('mouseleave', handleMouseLeave)
         }
       }
-
     })
 
     return () => {
-      if (cleanupLogoListeners) cleanupLogoListeners()
+      if (cleanupListeners) cleanupListeners()
       ctx.revert()
     }
   }, [])
@@ -136,7 +147,7 @@ export default function Footer() {
                 key={i}
                 ref={el => { if(el) imageRefs.current[i] = el }}
                 src={src}
-                className="absolute w-40 h-56 object-cover rounded-lg shadow-2xl opacity-0 transform -translate-x-1/2 -translate-y-1/2 will-change-transform"
+                className="absolute w-28 h-40 object-cover rounded-lg shadow-2xl opacity-0 transform -translate-x-1/2 -translate-y-1/2 will-change-transform"
                 alt=""
             />
         ))}
@@ -152,9 +163,9 @@ export default function Footer() {
         <p className="font-mono text-xs sm:text-sm tracking-widest text-cream/40 mb-4 sm:mb-6">
           LET&apos;S CREATE SOMETHING AMAZING
         </p>
-        <div id="footer-logo" className="cursor-none relative group">
+        <div className="relative group">
              <h2 className="font-display text-[clamp(4rem,18vw,16rem)] font-bold leading-[0.85] tracking-tighter">
-              <span className="block text-cream transition-colors duration-500 group-hover:text-rust">CODE</span>
+              <span id="footer-code-word" className="block text-cream transition-colors duration-500 hover:text-rust">CODE</span>
               <span className="block text-stroke-cream transition-opacity duration-500 group-hover:text-stroke-rust">MERCH<span className="text-rust">.</span></span>
             </h2>
         </div>
