@@ -7,17 +7,72 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
 
 const floatingImages = [
-  { src: '/Web-Design.webp', style: 'top-[5%] left-[15%] w-[22vw] max-w-[320px] -rotate-6' },
-  { src: '/Development.webp', style: 'top-[2%] right-[8%] w-[16vw] max-w-[240px] rotate-3' },
-  { src: '/E-commerce.webp', style: 'bottom-[18%] left-[3%] w-[18vw] max-w-[280px] rotate-2' },
-  { src: '/video_editing.webp', style: 'bottom-[8%] left-[38%] w-[20vw] max-w-[300px] -rotate-2' },
-  { src: '/agentic_web.webp', style: 'bottom-[10%] right-[5%] w-[17vw] max-w-[260px] rotate-6' },
+  { srcs: ['/Web-Design.webp', '/PropLanding.png'], style: 'top-[5%] left-[15%] w-[22vw] max-w-[320px] -rotate-6' },
+  { srcs: ['/Development.webp', '/Studbuddy.png'], style: 'top-[2%] right-[8%] w-[16vw] max-w-[240px] rotate-3' },
+  { srcs: ['/E-commerce.webp', '/obsidian_landing.png'], style: 'bottom-[18%] left-[3%] w-[13vw] max-w-[200px] rotate-2' },
+  { srcs: ['/video_editing.webp', '/propdashboard.png'], style: 'bottom-[8%] left-[38%] w-[20vw] max-w-[300px] -rotate-2' },
+  { srcs: ['/agentic_web.webp', '/Studybuddydash.png'], style: 'bottom-[10%] right-[5%] w-[17vw] max-w-[260px] rotate-6' },
 ]
 
 export default function Contact() {
   const sectionRef = useRef<HTMLElement>(null)
   const ctaRef = useRef<HTMLDivElement>(null)
   const formSectionRef = useRef<HTMLDivElement>(null)
+
+  // Dot hover — orbit floating images with GSAP
+  const [dotHovered, setDotHovered] = useState(false)
+  const orbitTlRef = useRef<gsap.core.Timeline | null>(null)
+  const floatImgRefs = useRef<HTMLDivElement[]>([])
+
+  // Build / kill orbit timeline when dot hover state changes
+  useEffect(() => {
+    if (dotHovered && floatImgRefs.current.length > 0) {
+      const tl = gsap.timeline({ repeat: -1 })
+
+      floatImgRefs.current.forEach((el, i) => {
+        if (!el) return
+        const imgA = el.querySelector('.float-img-a') as HTMLElement
+        const imgB = el.querySelector('.float-img-b') as HTMLElement
+        if (!imgA || !imgB) return
+
+        const delay = i * 0.15 // stagger each image
+
+        // Crossfade A → B with a scale pulse
+        tl.to(imgA, { opacity: 0, duration: 0.6, ease: 'power2.inOut' }, delay)
+        tl.to(imgB, { opacity: 1, duration: 0.6, ease: 'power2.inOut' }, delay)
+        tl.fromTo(el, { scale: 1 }, { scale: 1.05, duration: 0.3, yoyo: true, repeat: 1, ease: 'power1.inOut' }, delay)
+
+        // Hold image B
+        // Crossfade B → A
+        tl.to(imgB, { opacity: 0, duration: 0.6, ease: 'power2.inOut' }, 2.5 + delay)
+        tl.to(imgA, { opacity: 1, duration: 0.6, ease: 'power2.inOut' }, 2.5 + delay)
+        tl.fromTo(el, { scale: 1 }, { scale: 1.05, duration: 0.3, yoyo: true, repeat: 1, ease: 'power1.inOut' }, 2.5 + delay)
+      })
+
+      // Pad total duration for clean repeat
+      tl.to({}, { duration: 5 }, 0)
+
+      orbitTlRef.current = tl
+    } else {
+      // Kill timeline — freeze images at whatever state they're in
+      if (orbitTlRef.current) {
+        orbitTlRef.current.kill()
+        orbitTlRef.current = null
+      }
+      // Only reset scale, keep current image opacity as-is
+      floatImgRefs.current.forEach((el) => {
+        if (!el) return
+        gsap.to(el, { scale: 1, duration: 0.3, ease: 'power2.out' })
+      })
+    }
+    return () => {
+      if (orbitTlRef.current) {
+        orbitTlRef.current.kill()
+        orbitTlRef.current = null
+      }
+    }
+  }, [dotHovered])
+
   const formRef = useRef<HTMLFormElement>(null)
 
   // Mouse-following cursor for Submit Form
@@ -173,20 +228,42 @@ export default function Contact() {
     >
       {/* ─── SECTION 1: CTA Hero ─── */}
       <div ref={ctaRef} className="relative min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 md:px-12 py-20 overflow-hidden">
-        {/* Floating project images */}
+        {/* Floating project images with circular motion on dot hover */}
         {floatingImages.map((img, i) => (
           <div
             key={i}
             className={`cta-float-img absolute ${img.style} rounded-lg overflow-hidden shadow-2xl hidden md:block will-change-transform`}
           >
-            <img src={img.src} alt="" className="w-full h-full object-cover rounded-lg" />
+            {/* Inner wrapper — orbit motion is applied here to avoid conflict with scroll parallax on outer div */}
+            <div
+              ref={(el) => { if (el) floatImgRefs.current[i] = el }}
+              className="orbit-wrap relative w-full"
+            >
+              {/* First image — relative so it gives the container height */}
+              <img
+                src={img.srcs[0]}
+                alt=""
+                className="float-img-a w-full object-cover rounded-lg relative"
+              />
+              {/* Second image — overlaid, initially hidden */}
+              <img
+                src={img.srcs[1]}
+                alt=""
+                className="float-img-b w-full h-full object-cover rounded-lg absolute inset-0"
+                style={{ opacity: 0 }}
+              />
+            </div>
           </div>
         ))}
 
         {/* Main heading */}
         <div className="relative z-10 text-center max-w-[90vw]">
-          <h2 className="font-display text-[clamp(2.5rem,8vw,7rem)] font-bold leading-[1.05] tracking-tight">
-            <span className="cta-heading-line block">Let&apos;s chat <span className="text-cream/80">✦</span> and build</span>
+          <h2 className="font-display text-[clamp(2rem,6vw,5rem)] font-bold leading-[1.05] tracking-tight">
+            <span className="cta-heading-line block">Let&apos;s chat <span
+                  className="inline-block w-8 h-8 sm:w-10 sm:h-10 md:w-14 md:h-14 rounded-full bg-rust align-middle cursor-pointer"
+                  onMouseEnter={() => setDotHovered(true)}
+                  onMouseLeave={() => setDotHovered(false)}
+                /> and build</span>
             <span className="cta-heading-line block italic font-light">something beautiful</span>
           </h2>
         </div>
