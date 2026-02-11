@@ -2,6 +2,10 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
+    formats: ['image/webp', 'image/avif'],
+    deviceSizes: [640, 828, 1080, 1200, 1920],
+    imageSizes: [112, 256, 384],
+    minimumCacheTTL: 31536000, // 1 year – immutable local assets
     remotePatterns: [
       {
         protocol: 'https',

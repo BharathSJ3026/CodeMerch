@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import Image from 'next/image'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -19,7 +20,7 @@ export default function Footer() {
   const headingRef = useRef<HTMLDivElement>(null)
   
   // Image trail references
-  const imageRefs = useRef<HTMLImageElement[]>([])
+  const imageRefs = useRef<HTMLDivElement[]>([])
   const activeImageIndex = useRef(0)
   const lastSpawnPos = useRef({ x: 0, y: 0 })
   const zCounter = useRef(0)
@@ -143,13 +144,21 @@ export default function Footer() {
       {/* Preload images for trail */}
       <div className="fixed top-0 left-0 pointer-events-none w-full h-full z-50 overflow-hidden" style={{ zIndex: 50 }}>
         {images.map((src, i) => (
-            <img 
+            <div 
                 key={i}
                 ref={el => { if(el) imageRefs.current[i] = el }}
-                src={src}
-                className="absolute w-28 h-40 object-cover rounded-lg shadow-2xl opacity-0 transform -translate-x-1/2 -translate-y-1/2 will-change-transform"
-                alt=""
-            />
+                className="absolute w-28 h-40 rounded-lg shadow-2xl opacity-0 -translate-x-1/2 -translate-y-1/2 will-change-transform overflow-hidden"
+            >
+                <Image
+                    src={src}
+                    alt=""
+                    fill
+                    className="object-cover"
+                    sizes="112px"
+                    loading="lazy"
+                    quality={60}
+                />
+            </div>
         ))}
       </div>
 

@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState, useCallback } from 'react'
+import Image from 'next/image'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -185,18 +186,26 @@ export default function Work() {
             {/* Image container */}
             <div className="relative aspect-[4/3] overflow-hidden rounded-lg mb-4">
               {/* Base image (image1) */}
-              <img
+              <Image
                 src={project.image1}
                 alt={project.title}
-                className="project-img-base absolute inset-0 w-full h-full object-cover"
+                fill
+                className="project-img-base object-cover"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                loading="lazy"
+                quality={75}
               />
 
               {/* Hover image (image2) — zoom-out reveal */}
               <div className="project-img-hover-wrap absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100">
-                <img
+                <Image
                   src={project.image2}
                   alt={`${project.title} detail`}
-                  className="project-img-hover w-full h-full object-cover rounded-lg scale-[0.4] transition-transform duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-100"
+                  fill
+                  className="project-img-hover object-cover rounded-lg scale-[0.4] transition-transform duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-100"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  loading="lazy"
+                  quality={75}
                 />
               </div>
 
