@@ -7,11 +7,11 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
 
 const floatingImages = [
-  { srcs: ['/Web-Design.webp', '/PropLanding.png'], style: 'top-[5%] left-[15%] w-[22vw] max-w-[320px] -rotate-6' },
-  { srcs: ['/Development.webp', '/Studbuddy.png'], style: 'top-[2%] right-[8%] w-[16vw] max-w-[240px] rotate-3' },
-  { srcs: ['/E-commerce.webp', '/obsidian_landing.png'], style: 'bottom-[18%] left-[3%] w-[13vw] max-w-[200px] rotate-2' },
-  { srcs: ['/video_editing.webp', '/propdashboard.png'], style: 'bottom-[8%] left-[38%] w-[20vw] max-w-[300px] -rotate-2' },
-  { srcs: ['/agentic_web.webp', '/Studybuddydash.png'], style: 'bottom-[10%] right-[5%] w-[17vw] max-w-[260px] rotate-6' },
+  { srcs: ['/Web-Design.webp', '/PropLanding.webp'], style: 'top-[5%] left-[15%] w-[22vw] max-w-[320px] -rotate-6' },
+  { srcs: ['/Development.webp', '/Studbuddy.webp'], style: 'top-[2%] right-[8%] w-[16vw] max-w-[240px] rotate-3' },
+  { srcs: ['/E-commerce.webp', '/obsidian_landing.webp'], style: 'bottom-[18%] left-[3%] w-[13vw] max-w-[200px] rotate-2' },
+  { srcs: ['/video_editing.webp', '/propdashboard.webp'], style: 'bottom-[8%] left-[38%] w-[20vw] max-w-[300px] -rotate-2' },
+  { srcs: ['/agentic_web.webp', '/Studybuddydash.webp'], style: 'bottom-[10%] right-[5%] w-[17vw] max-w-[260px] rotate-6' },
 ]
 
 export default function Contact() {
