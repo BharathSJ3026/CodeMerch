@@ -8,11 +8,11 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
 
 const floatingImages = [
-  { src: '/Web-Design.webp', style: 'top-[5%] left-[5%] sm:left-[15%] w-[28vw] sm:w-[22vw] max-w-[320px] -rotate-6' },
-  { src: '/Development.webp', style: 'top-[2%] right-[3%] sm:right-[8%] w-[24vw] sm:w-[16vw] max-w-[240px] rotate-3' },
-  { src: '/E-commerce.webp', style: 'bottom-[18%] left-[1%] sm:left-[3%] w-[22vw] sm:w-[13vw] max-w-[200px] rotate-2' },
-  { src: '/video_editing.webp', style: 'bottom-[8%] left-[30%] sm:left-[38%] w-[26vw] sm:w-[20vw] max-w-[300px] -rotate-2' },
-  { src: '/agentic_web.webp', style: 'bottom-[10%] right-[2%] sm:right-[5%] w-[24vw] sm:w-[17vw] max-w-[260px] rotate-6' },
+  { src: '/Web-Design.webp', style: 'top-[8%] left-[4%] sm:left-[15%] w-[20vw] sm:w-[22vw] max-w-[320px] -rotate-6' },
+  { src: '/Development.webp', style: 'top-[6%] right-[4%] sm:right-[8%] w-[18vw] sm:w-[16vw] max-w-[240px] rotate-3' },
+  { src: '/E-commerce.webp', style: 'bottom-[14%] left-[2%] sm:left-[3%] w-[18vw] sm:w-[13vw] max-w-[200px] rotate-2' },
+  { src: '/video_editing.webp', style: 'bottom-[6%] left-[28%] sm:left-[38%] w-[20vw] sm:w-[20vw] max-w-[300px] -rotate-2' },
+  { src: '/agentic_web.webp', style: 'bottom-[8%] right-[3%] sm:right-[5%] w-[18vw] sm:w-[17vw] max-w-[260px] rotate-6' },
 ]
 
 export default function Contact() {
