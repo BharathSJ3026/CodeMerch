@@ -378,7 +378,7 @@ export default function Contact() {
             <div className="space-y-4">
               
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/codemerchstudio/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group flex items-center gap-3 text-cream/50 hover:text-cream transition-colors duration-300"
@@ -387,7 +387,7 @@ export default function Contact() {
                 <span className="font-mono text-sm group-hover:translate-x-1 transition-transform duration-300">Instagram</span>
               </a>
               <a
-                href="https://linkedin.com"
+                href="https://www.linkedin.com/company/codemerchstudio/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group flex items-center gap-3 text-cream/50 hover:text-cream transition-colors duration-300"
