@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- White circular background -->
+  <circle cx="256" cy="256" r="256" fill="#ffffff"/>
+  
+  <!-- Black "CM" text centered -->
+  <text x="220" y="340" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="280" fill="#000000" letter-spacing="-15">
+    CM
+  </text>
+  
+  <!-- Orange dot accent next to M -->
+  <circle cx="470" cy="305" r="50" fill="#ff6b35"/>
+</svg>
