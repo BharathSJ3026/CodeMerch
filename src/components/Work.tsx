@@ -134,7 +134,7 @@ export default function Work() {
     <section
       ref={sectionRef}
       id="work"
-      className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 md:px-12 overflow-hidden"
+      className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 md:px-12 overflow-hidden"
     >
       {/* Custom project cursor */}
       <div
@@ -158,7 +158,7 @@ export default function Work() {
         </div>
       </div>
 
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 sm:gap-0 mb-8 sm:mb-12 md:mb-16">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 sm:gap-0 mb-6 sm:mb-8 md:mb-12">
         <div>
           <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6 md:mb-8">
             <span className="font-mono text-xs sm:text-sm tracking-widest text-charcoal/60">03</span>

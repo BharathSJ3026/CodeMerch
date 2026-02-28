@@ -15,7 +15,7 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
   const lenisRef = useRef<Lenis | null>(null)
 
   useEffect(() => {
-    // Check if user prefers reduced motion
+    // Check if user prefers reduced motione also check the main page layout and services component to understand the spacing context.
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const isTouch = window.matchMedia('(pointer: coarse)').matches
     

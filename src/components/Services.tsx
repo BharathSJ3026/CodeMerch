@@ -293,7 +293,7 @@ export default function Services() {
           ))}
         </div>
 
-        <div ref={sectionRef} className="flex flex-col justify-center py-8 sm:py-10 md:py-12 px-4 sm:px-6 md:px-12">
+        <div ref={sectionRef} className="flex flex-col justify-center py-12 sm:py-16 md:py-20 px-4 sm:px-6 md:px-12">
           {/* Header */}
           <div className="flex justify-center mb-6 sm:mb-8 md:mb-10">
             <h2 className="font-display text-[clamp(1.75rem,5vw,3.5rem)] font-bold uppercase tracking-tight text-cream">
