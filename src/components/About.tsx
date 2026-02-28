@@ -40,8 +40,8 @@ export default function About() {
           const mobileTl = gsap.timeline({
             scrollTrigger: {
               trigger: mobileTextRef.current,
-              start: 'top 85%',
-              end: 'top 20%',
+              start: 'top 95%',
+              end: 'bottom 50%',
               scrub: 0.5,
             },
           })
@@ -136,10 +136,17 @@ export default function About() {
   }, [])
 
   // Sinusoidal particle wave — optimized with typed arrays + IntersectionObserver
+  // Disabled on mobile for performance
   useEffect(() => {
     const canvas = canvasRef.current
     const section = triggerRef.current
     if (!canvas || !section) return
+
+    // Skip particle wave on mobile — fixes lag and unwanted movement
+    if (window.innerWidth < 768) {
+      canvas.style.display = 'none'
+      return
+    }
 
     const ctx = canvas.getContext('2d')
     if (!ctx) return
