@@ -11,6 +11,7 @@ export default function About() {
   const triggerRef = useRef<HTMLElement>(null)
   const mobileTextRef = useRef<HTMLParagraphElement>(null)
   const mobileCardsRef = useRef<HTMLDivElement>(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
     let desktopSplit: SplitType | null = null
@@ -134,14 +135,127 @@ export default function About() {
     }
   }, [])
 
+  // Sinusoidal particle wave — optimized with typed arrays + IntersectionObserver
+  useEffect(() => {
+    const canvas = canvasRef.current
+    const section = triggerRef.current
+    if (!canvas || !section) return
+
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    let animationId = 0
+    let isVisible = false
+
+    // Typed arrays — cache-friendly, zero GC pressure
+    let count = 0
+    let px: Float32Array  // x positions
+    let py: Float32Array  // baseY offsets from viewport center
+    let ps: Float32Array  // sizes
+    let pa: Float32Array  // amplitudes
+    let pf: Float32Array  // frequencies
+    let pp: Float32Array  // phases
+
+    const colors = [
+      'rgba(240, 160, 90, 0.5)',
+      'rgba(248, 180, 120, 0.42)',
+      'rgba(235, 145, 75, 0.55)',
+      'rgba(212, 85, 42, 0.55)',
+      'rgba(195, 70, 35, 0.45)',
+      'rgba(220, 100, 50, 0.5)',
+    ]
+    const numColors = colors.length
+
+    const resize = () => {
+      canvas.width = section.offsetWidth
+      canvas.height = section.offsetHeight
+      generate()
+    }
+
+    const generate = () => {
+      count = Math.max(200, Math.floor(canvas.width / 5))
+      px = new Float32Array(count)
+      py = new Float32Array(count)
+      ps = new Float32Array(count)
+      pa = new Float32Array(count)
+      pf = new Float32Array(count)
+      pp = new Float32Array(count)
+
+      const baseFreq = 0.008
+      const baseAmp = 30
+
+      for (let i = 0; i < count; i++) {
+        px[i] = (canvas.width / count) * i + (Math.random() - 0.5) * 8
+        py[i] = (Math.random() - 0.5) * 40
+        ps[i] = Math.random() * 2.5 + 2
+        pa[i] = baseAmp + (Math.random() - 0.5) * 10
+        pf[i] = baseFreq + (Math.random() - 0.5) * 0.001
+        pp[i] = Math.random() * 0.3
+      }
+    }
+
+    resize()
+    window.addEventListener('resize', resize)
+
+    // Only run rAF while section is on screen
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting
+        if (isVisible && !animationId) tick()
+      },
+      { threshold: 0 }
+    )
+    observer.observe(section)
+
+    const tick = () => {
+      if (!isVisible) { animationId = 0; return }
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+      const rect = section.getBoundingClientRect()
+      const centerY = -rect.top + window.innerHeight * 0.5
+      const wh = window.innerHeight
+      const progress = Math.max(0, Math.min(1, (wh - rect.top) / (wh + section.offsetHeight)))
+      const phase = progress * Math.PI * 10
+      const h = canvas.height
+
+      // Batch per color — stride through array (particles assigned round-robin)
+      for (let c = 0; c < numColors; c++) {
+        ctx.fillStyle = colors[c]
+        ctx.beginPath()
+        for (let i = c; i < count; i += numColors) {
+          const y = centerY + py[i] + Math.sin(px[i] * pf[i] + pp[i] + phase) * pa[i]
+          if (y < -5 || y > h + 5) continue
+          ctx.moveTo(px[i] + ps[i], y)
+          ctx.arc(px[i], y, ps[i], 0, 6.2832)
+        }
+        ctx.fill()
+      }
+
+      animationId = requestAnimationFrame(tick)
+    }
+
+    return () => {
+      if (animationId) cancelAnimationFrame(animationId)
+      observer.disconnect()
+      window.removeEventListener('resize', resize)
+    }
+  }, [])
+
   return (
     <section 
       ref={triggerRef} 
       id="about-track" 
       className="relative z-[1] bg-cream"
     >
+      {/* Particle wave canvas */}
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full pointer-events-none"
+      />
+
       {/* Mobile: Normal flow with scroll reveal */}
-      <div className="md:hidden py-12 px-4 sm:px-6">
+      <div className="md:hidden py-12 px-4 sm:px-6 relative z-10">
         <div className="w-full max-w-7xl mx-auto flex flex-col gap-6">
           <div className="flex flex-col justify-center">
             <p
@@ -195,7 +309,7 @@ export default function About() {
       </div>
 
       {/* Desktop: Sticky scroll reveal */}
-      <div className="hidden md:block min-h-[160vh]">
+      <div className="hidden md:block min-h-[160vh] relative z-10">
         <div className="sticky top-0 h-screen flex items-center justify-center py-20 px-6 md:px-12 overflow-hidden">
           <div className="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-24 items-center h-full">
             

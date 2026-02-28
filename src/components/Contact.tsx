@@ -9,7 +9,7 @@ gsap.registerPlugin(ScrollTrigger)
 
 const floatingImages = [
   { src: '/Web-Design.webp', style: 'top-[25%] left-[2%] sm:top-[5%] sm:left-[15%] w-[18vw] sm:w-[22vw] max-w-[320px] -rotate-6' },
-  { src: '/Development.webp', style: 'top-[22%] right-[2%] sm:top-[2%] sm:right-[8%] w-[16vw] sm:w-[16vw] max-w-[240px] rotate-3' },
+  { src: '/Development.webp', style: 'top-[22%] right-[2%] sm:top-[12%] sm:right-[14%] w-[16vw] sm:w-[16vw] max-w-[240px] rotate-3' },
   { src: '/E-commerce.webp', style: 'bottom-[25%] left-[2%] sm:bottom-[18%] sm:left-[3%] w-[16vw] sm:w-[13vw] max-w-[200px] rotate-2' },
   { src: '/video_editing.webp', style: 'bottom-[20%] left-[32%] sm:bottom-[8%] sm:left-[38%] w-[18vw] sm:w-[20vw] max-w-[300px] -rotate-2' },
   { src: '/agentic_web.webp', style: 'bottom-[24%] right-[2%] sm:bottom-[10%] sm:right-[5%] w-[16vw] sm:w-[17vw] max-w-[260px] rotate-6' },
@@ -235,7 +235,7 @@ export default function Contact() {
           <div
             key={i}
             ref={(el) => { if (el) floatImgRefs.current[i] = el }}
-            className={`cta-float-img absolute ${img.style} rounded-lg overflow-hidden shadow-2xl will-change-transform`}
+            className={`cta-float-img absolute hidden sm:block ${img.style} rounded-lg overflow-hidden shadow-2xl will-change-transform`}
             style={{ clipPath: 'inset(100% 0% 0% 0%)' }}
           >
             <Image
@@ -252,7 +252,7 @@ export default function Contact() {
 
         {/* Main heading */}
         <div className="relative z-10 text-center max-w-[90vw]">
-          <h2 className="font-display text-[clamp(2rem,6vw,5rem)] font-bold leading-[1.05] tracking-tight">
+          <h2 className="font-display text-[clamp(2.5rem,8vw,5rem)] font-bold leading-[1.05] tracking-tight">
             <span className="cta-heading-line block">Let&apos;s chat <span
                   className="inline-block w-8 h-8 sm:w-10 sm:h-10 md:w-14 md:h-14 rounded-full bg-rust align-middle cursor-pointer"
                   onMouseEnter={() => setDotHovered(true)}
@@ -269,11 +269,11 @@ export default function Contact() {
       </div>
 
       {/* ─── SECTION 2: Contact Form ─── */}
-      <div ref={formSectionRef} className="relative px-4 sm:px-6 md:px-12 lg:px-20 py-12 sm:py-20 md:py-28">
-        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
+      <div ref={formSectionRef} className="relative px-4 sm:px-6 md:px-12 lg:px-20 py-8 sm:py-20 md:py-28">
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-16">
           {/* Left side — Form */}
           <div className="w-full lg:w-[55%]">
-            <h3 className="form-heading font-display text-lg sm:text-xl md:text-2xl lg:text-3xl font-light italic text-cream/80 mb-8 sm:mb-10 md:mb-12">
+            <h3 className="form-heading font-display text-lg sm:text-xl md:text-2xl lg:text-3xl font-light italic text-cream/80 mb-5 sm:mb-10 md:mb-12">
               We would love to hear from you.
             </h3>
 
@@ -283,14 +283,14 @@ export default function Contact() {
                 <div className="relative">
                   <input
                     type="text"
-                    className="contact-input w-full bg-cream/[0.06] border border-cream/10 rounded-md px-4 py-3 text-xs sm:text-sm text-cream placeholder:text-cream/30 focus:border-cream/30 focus:outline-none transition-colors"
+                    className="contact-input w-full bg-cream/[0.06] border border-cream/10 rounded-md px-4 py-3.5 text-sm text-cream placeholder:text-cream/30 focus:border-cream/30 focus:outline-none transition-colors"
                     placeholder="First name*"
                   />
                 </div>
                 <div className="relative">
                   <input
                     type="text"
-                    className="contact-input w-full bg-cream/[0.06] border border-cream/10 rounded-md px-4 py-3 text-xs sm:text-sm text-cream placeholder:text-cream/30 focus:border-cream/30 focus:outline-none transition-colors"
+                    className="contact-input w-full bg-cream/[0.06] border border-cream/10 rounded-md px-4 py-3.5 text-sm text-cream placeholder:text-cream/30 focus:border-cream/30 focus:outline-none transition-colors"
                     placeholder="Last name*"
                   />
                 </div>
@@ -301,14 +301,14 @@ export default function Contact() {
                 <div className="relative">
                   <input
                     type="text"
-                    className="contact-input w-full bg-cream/[0.06] border border-cream/10 rounded-md px-4 py-3 text-xs sm:text-sm text-cream placeholder:text-cream/30 focus:border-cream/30 focus:outline-none transition-colors"
+                    className="contact-input w-full bg-cream/[0.06] border border-cream/10 rounded-md px-4 py-3.5 text-sm text-cream placeholder:text-cream/30 focus:border-cream/30 focus:outline-none transition-colors"
                     placeholder="Company name*"
                   />
                 </div>
                 <div className="relative">
                   <input
                     type="email"
-                    className="contact-input w-full bg-cream/[0.06] border border-cream/10 rounded-md px-4 py-3 text-xs sm:text-sm text-cream placeholder:text-cream/30 focus:border-cream/30 focus:outline-none transition-colors"
+                    className="contact-input w-full bg-cream/[0.06] border border-cream/10 rounded-md px-4 py-3.5 text-sm text-cream placeholder:text-cream/30 focus:border-cream/30 focus:outline-none transition-colors"
                     placeholder="Company email*"
                   />
                 </div>
@@ -318,19 +318,19 @@ export default function Contact() {
               <div className="form-field">
                 <input
                   type="url"
-                  className="contact-input w-full bg-cream/[0.06] border border-cream/10 rounded-md px-4 py-3 text-xs sm:text-sm text-cream placeholder:text-cream/30 focus:border-cream/30 focus:outline-none transition-colors"
+                  className="contact-input w-full bg-cream/[0.06] border border-cream/10 rounded-md px-4 py-3.5 text-sm text-cream placeholder:text-cream/30 focus:border-cream/30 focus:outline-none transition-colors"
                   placeholder="Company website url*"
                 />
               </div>
 
               {/* Row 4: Project description */}
               <div className="form-field">
-                <p className="text-xs sm:text-sm text-cream/60 mb-2 sm:mb-3">
+                <p className="text-sm text-cream/60 mb-2 sm:mb-3">
                   Tell us about the project (Scope, Timeline, Budget):*
                 </p>
                 <textarea
                   rows={4}
-                  className="contact-input w-full bg-cream/[0.06] border border-cream/10 rounded-md px-4 py-3 text-xs sm:text-sm text-cream placeholder:text-cream/30 focus:border-cream/30 focus:outline-none transition-colors resize-none"
+                  className="contact-input w-full bg-cream/[0.06] border border-cream/10 rounded-md px-4 py-3.5 text-sm text-cream placeholder:text-cream/30 focus:border-cream/30 focus:outline-none transition-colors resize-none"
                   placeholder="Type us a message"
                 />
               </div>

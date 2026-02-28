@@ -134,7 +134,7 @@ export default function Hero() {
         {/* Main title */}
         <h1
           ref={titleRef}
-          className="font-display text-[clamp(3.5rem,14vw,10rem)] font-bold leading-[0.85] tracking-tighter mb-4 sm:mb-8 will-change-transform"
+          className="font-display text-[clamp(3.5rem,14vw,10rem)] font-bold leading-[0.85] tracking-tighter mb-0 will-change-transform"
         >
           <span className="block overflow-hidden">
             {splitText('WE CRAFT')}

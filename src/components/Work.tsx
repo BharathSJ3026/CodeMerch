@@ -51,6 +51,9 @@ export default function Work() {
   const targetPos = useRef({ x: 0, y: 0 })
   const rafId = useRef<number>(0)
 
+  const curtainLeftRefs = useRef<(HTMLDivElement | null)[]>([])
+  const curtainRightRefs = useRef<(HTMLDivElement | null)[]>([])
+
   const [cursorVisible, setCursorVisible] = useState(false)
   const [cursorColor, setCursorColor] = useState('#D4552A')
   const [cursorLabel, setCursorLabel] = useState('open')
@@ -82,11 +85,11 @@ export default function Work() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Heading animation
-      gsap.from('.work-heading', {
-        y: 80,
-        opacity: 0,
+      // Heading text reveal from bottom
+      gsap.from('.work-heading-text', {
+        yPercent: 100,
         duration: 1,
+        ease: 'power4.out',
         scrollTrigger: {
           trigger: '.work-heading',
           start: 'top 85%',
@@ -114,14 +117,30 @@ export default function Work() {
     return () => ctx.revert()
   }, [])
 
-  const handleProjectEnter = (project: typeof projects[0]) => {
+  const handleProjectEnter = (project: typeof projects[0], index: number) => {
     setCursorVisible(true)
     setCursorColor(project.color)
     setCursorLabel(project.link ? 'open' : 'view')
+
+    const left = curtainLeftRefs.current[index]
+    const right = curtainRightRefs.current[index]
+    if (left && right) {
+      gsap.killTweensOf([left, right])
+      gsap.to(left, { xPercent: -100, duration: 0.6, ease: 'power3.inOut' })
+      gsap.to(right, { xPercent: 100, duration: 0.6, ease: 'power3.inOut' })
+    }
   }
 
-  const handleProjectLeave = () => {
+  const handleProjectLeave = (index: number) => {
     setCursorVisible(false)
+
+    const left = curtainLeftRefs.current[index]
+    const right = curtainRightRefs.current[index]
+    if (left && right) {
+      gsap.killTweensOf([left, right])
+      gsap.to(left, { xPercent: 0, duration: 0.4, ease: 'power2.in' })
+      gsap.to(right, { xPercent: 0, duration: 0.4, ease: 'power2.in' })
+    }
   }
 
   const handleProjectClick = (project: typeof projects[0]) => {
@@ -166,8 +185,8 @@ export default function Work() {
             <span className="font-mono text-xs sm:text-sm tracking-widest text-charcoal/60">SELECTED WORK</span>
           </div>
 
-          <h2 className="work-heading font-display text-[clamp(2rem,8vw,5rem)] font-bold leading-[0.95] tracking-tight will-change-transform">
-            Featured Work
+          <h2 className="work-heading overflow-hidden font-display text-[clamp(2rem,8vw,5rem)] font-bold leading-[0.95] tracking-tight will-change-transform">
+            <span className="work-heading-text block">Featured Work</span>
           </h2>
         </div>
       </div>
@@ -179,44 +198,67 @@ export default function Work() {
             ref={(el) => { if (el) projectRefs.current[i] = el }}
             className="project-card group"
             style={{ cursor: cursorVisible ? 'none' : 'pointer' }}
-            onMouseEnter={() => handleProjectEnter(project)}
-            onMouseLeave={handleProjectLeave}
+            onMouseEnter={() => handleProjectEnter(project, i)}
+            onMouseLeave={() => handleProjectLeave(i)}
             onClick={() => handleProjectClick(project)}
           >
             {/* Image container */}
             <div className="relative aspect-[4/3] overflow-hidden rounded-lg mb-4">
-              {/* Base image (image1) */}
+              {/* Hover image (image2) — sits underneath the curtains */}
               <Image
-                src={project.image1}
-                alt={project.title}
+                src={project.image2}
+                alt={`${project.title} detail`}
                 fill
-                className="project-img-base object-cover"
+                className="object-cover"
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 loading="lazy"
                 quality={75}
               />
 
-              {/* Hover image (image2) — zoom-out reveal */}
-              <div className="project-img-hover-wrap absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100">
-                <Image
-                  src={project.image2}
-                  alt={`${project.title} detail`}
-                  fill
-                  className="project-img-hover object-cover rounded-lg scale-[0.4] transition-transform duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-100"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  loading="lazy"
-                  quality={75}
-                />
+              {/* Left curtain — shows left half of image1 */}
+              <div
+                ref={(el) => { curtainLeftRefs.current[i] = el }}
+                className="absolute left-0 top-0 w-1/2 h-full z-[10] overflow-hidden"
+              >
+                <div className="absolute top-0 left-0 w-[200%] h-full">
+                  <Image
+                    src={project.image1}
+                    alt={project.title}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    loading="lazy"
+                    quality={75}
+                  />
+                </div>
+              </div>
+
+              {/* Right curtain — shows right half of image1 */}
+              <div
+                ref={(el) => { curtainRightRefs.current[i] = el }}
+                className="absolute right-0 top-0 w-1/2 h-full z-[10] overflow-hidden"
+              >
+                <div className="absolute top-0 right-0 w-[200%] h-full">
+                  <Image
+                    src={project.image1}
+                    alt={project.title}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    loading="lazy"
+                    quality={75}
+                  />
+                </div>
               </div>
 
               {/* Subtle overlay */}
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500" />
+              <div className="absolute inset-0 z-[15] bg-black/0 group-hover:bg-black/10 transition-colors duration-500" />
 
               {/* Corner brackets */}
-              <div className="absolute top-3 left-3 w-5 h-5 border-l-2 border-t-2 border-cream opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="absolute top-3 right-3 w-5 h-5 border-r-2 border-t-2 border-cream opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="absolute bottom-3 left-3 w-5 h-5 border-l-2 border-b-2 border-cream opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="absolute bottom-3 right-3 w-5 h-5 border-r-2 border-b-2 border-cream opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute top-3 left-3 w-5 h-5 border-l-2 border-t-2 border-cream opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-[15]" />
+              <div className="absolute top-3 right-3 w-5 h-5 border-r-2 border-t-2 border-cream opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-[15]" />
+              <div className="absolute bottom-3 left-3 w-5 h-5 border-l-2 border-b-2 border-cream opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-[15]" />
+              <div className="absolute bottom-3 right-3 w-5 h-5 border-r-2 border-b-2 border-cream opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-[15]" />
             </div>
 
             {/* Project info */}

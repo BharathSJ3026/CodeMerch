@@ -351,7 +351,7 @@ export default function Services() {
                       ref={(el) => { marqueeRefs.current[i] = el }}
                       className="flex whitespace-nowrap"
                     >
-                      {[...Array(8)].map((_, idx) => (
+                      {[...Array(4)].map((_, idx) => (
                         <span 
                           key={idx} 
                           className="font-display font-black text-[6vh] sm:text-[10vh] md:text-[14vh] uppercase px-4 text-cream"
@@ -363,23 +363,23 @@ export default function Services() {
                   </div>
 
                   {/* Service Content */}
-                  <div className="relative z-10 py-4 sm:py-5 md:py-6 flex items-center justify-between transition-all duration-300">
+                  <div className="relative z-10 py-4 sm:py-5 md:py-6 flex items-center justify-between">
                     <div className="flex items-baseline gap-3 sm:gap-4 md:gap-6">
                       <span className="font-mono text-[10px] sm:text-xs text-rust">{service.number}</span>
-                      <h3 
-                        className={`font-display font-bold uppercase transition-all duration-500 text-cream ${
-                          isHovered 
-                            ? 'text-2xl sm:text-4xl md:text-5xl translate-x-1 sm:translate-x-2 md:translate-x-4' 
-                            : 'text-xl sm:text-3xl md:text-4xl'
+                      <h3
+                        className={`font-display font-bold uppercase text-xl sm:text-3xl md:text-4xl text-cream origin-left transition-transform duration-500 will-change-transform ${
+                          isHovered
+                            ? 'scale-[1.15] sm:scale-[1.2] md:scale-125 translate-x-1 sm:translate-x-2 md:translate-x-4'
+                            : ''
                         }`}
                       >
                         {service.title}
                       </h3>
                     </div>
-                    
+
                     {/* Tags & Description - Desktop */}
-                    <div 
-                      className={`hidden md:flex flex-col items-end gap-1 transition-all duration-500 ${
+                    <div
+                      className={`hidden md:flex flex-col items-end gap-1 transition-[opacity,transform] duration-500 ${
                         isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'
                       }`}
                     >
@@ -399,8 +399,8 @@ export default function Services() {
                     </div>
 
                     {/* Arrow indicator - Mobile */}
-                    <div 
-                      className={`md:hidden transition-all duration-300 ${
+                    <div
+                      className={`md:hidden transition-[opacity,transform] duration-300 ${
                         isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2'
                       }`}
                     >
@@ -421,8 +421,8 @@ export default function Services() {
                   </div>
 
                   {/* Mobile: Image + Tags shown below on hover */}
-                  <div 
-                    className={`md:hidden overflow-hidden transition-all duration-500 ${
+                  <div
+                    className={`md:hidden overflow-hidden transition-[max-height,opacity] duration-500 ${
                       isHovered ? 'max-h-[300px] opacity-100 pb-4' : 'max-h-0 opacity-0'
                     }`}
                   >
